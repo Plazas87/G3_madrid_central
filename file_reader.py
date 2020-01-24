@@ -22,7 +22,7 @@ class FileReader:
             try:
                 datos = pd.read_csv(self.pathName + file, sep=';', encoding='iso-8859-1')
                 temp_table.append(datos)
-                logging.info("{} Load succuess".format(file))
+                logging.info("{} Load success".format(file))
             except Exception as e:
                 print("Execption: can't load file :  {}".format(file))
                 logging.error("Exception: {}".format(e))
@@ -38,8 +38,9 @@ class FileReader:
             file_temp = f
 
         for file in file_temp:
-            if self.fileExtension in file:
-                self.files.append(file)
+            for ext in self.fileExtension:
+                if ext in file:
+                    self.files.append(file)
 
         logging.info("Total files : {0}".format(self.files))
         return len(self.files)

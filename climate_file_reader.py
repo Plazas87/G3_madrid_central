@@ -13,12 +13,12 @@ class ClimateFileReader(fr.FileReader):
         logging.info('Creating Climate file reader object')
         fr.FileReader.__init__(self, rutaArchivo, extencion)
 
-    def load_files(self):
+    def load_files(self, files_to_read):
         """Esta función se encarga de leer todos los archivos en el directorio que cumplen
         con el criterio de la extención"""
         logging.info('Start loading files')
         temp_table = []
-        for file in self.files:
+        for file in files_to_read:
             print('Cargando tabla desde: ' + self.pathName, file)
             try:
                 temp_table.append(self.__prepare_data(self.pathName, file))

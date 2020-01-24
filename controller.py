@@ -11,35 +11,150 @@ class Controller:
     """Controlador que se encanga de armonizar la funcionalidades de todos los objetos de las clases presentes """
     def __init__(self, configuration):
         logging.info('Starting controller')
-        self.dbContrller = DatabaseController(configuration)
-        self.airQualityDataController = ClimateFileReader(rutaArchivo=configuration.air_quality_path, extencion='.csv')
-        self.airQualityStation = ClimateStation(rutaArchivo=configuration.air_stations_path, extencion='.csv')
-        self.trafficDataController = TrafficFileReader(rutaArchivo=configuration.traffic_data_path, extencion='.csv')
-        self.trafficStation = TrafficStation(rutaArchivo=configuration.traffic_station_path, extencion='.csv')
+        self.dbController = DatabaseController(configuration)
+        self.airQualityDataController = ClimateFileReader(rutaArchivo=configuration.air_quality_path,
+                                                          extencion=['.txt', '.csv'])
+
+        self.airQualityStation = ClimateStation(rutaArchivo=configuration.air_stations_path,
+                                                extencion='.csv')
+
+        self.trafficDataController = TrafficFileReader(rutaArchivo=configuration.traffic_data_path,
+                                                       extencion='.csv')
+
+        self.trafficStation = TrafficStation(rutaArchivo=configuration.traffic_station_path,
+                                             extencion='.csv')
+
+    def check_files(self):
+        files_to_read = []
+        logging.info('Look for files that has been already loaded')
+        query = self.dbController.selectQuery('files', 'file_name')
+        print('Previously read files', query)
+        logging.info('Previously read files: ' + str(query))
+        try:
+            # Comprueba que archivos an sido leidos previamente, y por lo tanto no se deben volver a leer
+            for i in self.airQualityDataController.files:
+                if i in query:
+                    logging.info('File: ' + str(i) + ' Already loaded')
+                    print('No se carga')
+                    pass
+                else:
+                    print(i, 'Se carga')
+                    files_to_read.append(i)
+                    print('Controller ******')
+
+        except Exception as e:
+            logging.error("Can't read files from database " + str(e))
+
+        return files_to_read
 
     def read_data(self):
+        """Esta función se encarga de leer los archivos que se encuentran en cada una de las ubicaciones del repositorio,
+        si el archivo ya ha sido leido, no se carga nuevaente, de lo contrario el archivo se carga normalmente."""
         try:
-            self.airQualityDataController.load_files()  # devuelve algo esta función?
-            self.dbContrller.insert('files', self.airQualityDataController.files)
+            load_files = self.check_files()
+            logging.info('New files: ' + str(load_files))
+            _ = []
+            for file in load_files:
+
+                if file in self.airQualityDataController.files:
+                    _.append(file)
+                    self.airQualityDataController.load_files(_)
+                    # _ =[]
+
+                if file in self.airQualityStation.files:
+                    _.append(file)
+                    self.airQualityStation.load_files(_)
+                    # _ = []
+
+                if file in self.trafficDataController.files:
+                    _.append(file)
+                    self.trafficDataController.load_files(_)
+                    # _ = []
+
+                if file in self.trafficStation.files:
+                    _.append(file)
+                    self.trafficStation.load_files(_)
+                    # _ = []
+
+                _ = []
 
         except Exception as e:
-            logging.error('Error - ' + str(e))
+            print(e)
 
-        try:
-            self.airQualityStation.load_files()  # devuelve algo esta función?
+        if len(load_files) != 0:
+            self.dbController.insert('files', load_files)
+            pass
 
-        except Exception as e:
-            logging.error('Error while loading file - ' + str(e))
+        # readed_files = self.check_files()
+        # files_to_read = []
+        # temp_object_list = []
+        # try:
+        #     # Comprueba que archivos an sido leidos previamente, y por lo tanto no se deben volver a leer
+        #     query = self.dbController.selectQuery('files', 'file_name')
+        #     print('Previously read files', query)
+        #     logging.info('Previously read files: ' + str(query))
+        #     if len(query) == 0 or query is None:
+        #         logging.info('Loading files for the firs time')
+        #         self.airQualityDataController.load_files(self.airQualityDataController.files)
+        #         self.dbController.insert('madridcentral', 'files', self.airQualityDataController.files)
+        #
+        #     else:
+        #         for i in self.airQualityDataController.files:
+        #             if i in query:
+        #                 logging.info('File: ' + str(i) + ' Already loaded')
+        #                 pass
+        #             else:
+        #                 print(i, 'Se carga')
+        #                 files_to_read.append(i)
+        #                 logging.info('Loading new files: ' + str(files_to_read))
+        #                 self.airQualityDataController.load_files(files_to_read)
+        #                 self.dbController.insert('files', files_to_read)
+        #                 print('Controller')
+        #
+        # except Exception as e:
+        #     print(e)
 
-        try:
-            self.trafficStation.load_files()  # devuelve algo esta función?
+    def start(self):
+        self.read_data()
 
-        except Exception as e:
-            logging.error('Error while loading file - ' + str(e))
 
-        print(sys.getsizeof(self.airQualityDataController.mainTable))
-        print(sys.getsizeof(self.airQualityStation.mainTable))
-        print(sys.getsizeof(self.trafficStation.mainTable))
+
+        # try:
+        #     query = self.dbController.selectQuery('files', 'file_name')
+        #     print(query)
+        #     if query is not None or len(query) != 0:
+        #         for row in self.airQualityDataController.files:
+        #             if row not in query:
+        #                 print('TRUE')
+        #                 files_to_read.append(row)
+        #
+        #         self.airQualityDataController.load_files(files_to_read)
+        #
+        #     else:
+        #         self.airQualityDataController.load_files(self.airQualityDataController.files)
+        #
+        #     print(files_to_read, '***')
+        #
+        #     self.dbController.insert('files', self.airQualityDataController.files)
+        #
+        # except Exception as e:
+        #     logging.error('Error - ' + str(e))
+        #
+        # try:
+        #     self.airQualityStation.load_files()  # devuelve algo esta función?
+        #
+        # except Exception as e:
+        #     logging.error('Error while loading file - ' + str(e))
+        #
+        # try:
+        #     self.trafficStation.load_files()  # devuelve algo esta función?
+        #
+        # except Exception as e:
+        #     logging.error('Error while loading file - ' + str(e))
+        #
+        # print(sys.getsizeof(self.airQualityDataController.mainTable))
+        # print(sys.getsizeof(self.airQualityStation.mainTable))
+        # print(sys.getsizeof(self.trafficStation.mainTable))
 
         #
         # for name, valor in airQualityDataController.__dict__.items():

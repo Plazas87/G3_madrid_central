@@ -1,3 +1,5 @@
+#! usr/bin/env
+
 from configparser import ConfigParser
 import logging
 import enums as en
@@ -14,6 +16,7 @@ class BulidConfiguraion:
         self.address = param['postgresql'][en.DBConfigEnum.address.name]
         self.port = param['postgresql'][en.DBConfigEnum.port.name]
         self.database = param['postgresql'][en.DBConfigEnum.database.name]
+        self.schema = param['postgresql'][en.DBConfigEnum.schema.name]
 
         # Built configuration for dataframes
         self.air_quality_path = param['paths'][en.MainConfig.air_quality_path.name]
@@ -25,7 +28,6 @@ class BulidConfiguraion:
         """Configura los parámetros para la conexión con la base de datos a través de la lectura de un
         archivo de configuración de extención .ini"""
         conf = ConfigParser()
-        print(conf)
         try:
             conf.read(filename)
             config_file_dict = {}
@@ -53,5 +55,6 @@ class BulidConfiguraion:
 
 if __name__ == '__main__':
     c = BulidConfiguraion()
+    print(c)
 
 

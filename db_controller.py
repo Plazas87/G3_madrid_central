@@ -1,6 +1,10 @@
 import sqlite3
 import psycopg2 as db
 import logging
+import pandas as pd
+from datetime import datetime
+import numpy as np
+from built_configuration import BulidConfiguraion
 from configparser import ConfigParser
 from enum import Enum
 
@@ -16,19 +20,12 @@ class DatabaseController:
         self.address = configuration.address
         self.port = configuration.port
         self.database = configuration.database
+        self.schema = configuration.schema
 
     def __new__(cls, name=None, params=None):
         if not hasattr(cls, 'instance'):  # Si no existe el atributo “instance”
             cls.instance = super(DatabaseController, cls).__new__(cls)  # lo creamos
         return cls.instance
-
-    # Este código se encuentra comentado por que era el que se usaba para la conexión con sqlite3
-    # def connect(self):
-    #     try:
-    #         conn = db.connect('Bitacora.db')
-    #         return conn
-    #     except Exception as e:
-    #         print(e, '- Error in model.py: {} method connect'.format(e.__traceback__.tb_lineno))
 
     def connect(self):
         logging.info('Connecting with database')
@@ -63,14 +60,36 @@ class DatabaseController:
         if conn is not None:
             if table == 'files':
                 try:
-                    # = "INSERT INTO {0} (file_name) VALUES (%s)".format(table)
+                    query = "INSERT INTO {0} (file_name) VALUES (%s)".format('.'.join([self.schema, table]))
                     # print(query, value)
-                    print(data)
+                    print(data, '***')
                     cursor = conn.cursor()
                     for value in data:
-                        cursor.execute("INSERT INTO files (file_name) VALUES (%s)", (value,))
+                        cursor.execute(query, (value,))
                         print('La orden ha sido almacenada correctamente en la base de datos')
-                     cursor.comm
+
+                    conn.commit()
+
+                except Exception as e:
+                    print(e)
+                    cursor.close()
+                    self.close_connection(conn)
+                    print("PostgreSQL connection has been closed but an Exception has been raised")
+                    return None
+                else:
+                    cursor.close()
+                    self.close_connection(conn)
+                    print("PostgreSQL connection is closed")
+                    return query
+
+            if table == 'day':
+                try:
+                    query = "INSERT INTO {0} VALUES (%s, %s, %s, %s)".format('.'.join([self.schema, table]))
+                    cursor = conn.cursor()
+                    cursor.execute(query, (data[0], data[3], data[2], data[1]))
+                    print('La orden ha sido almacenada correctamente en la base de datos')
+
+                    conn.commit()
 
                 except Exception as e:
                     print(e)
@@ -126,42 +145,42 @@ class DatabaseController:
         # else:
         #     print('No se puede establecer una comunicación con la base de datos')
 
-    def update_capital(self, time_stamp, value):
-        try:
-            conn = self.connect()
-            with conn:
-                cursor = conn.cursor()
-                cursor.execute("INSERT INTO capital (timestamp, capital) VALUES (%s,%s)", (time_stamp, value))
-        except sqlite3.IntegrityError as e:
-            print(e, '- Error in model.py: {} method update_capital'.format(e.__traceback__.tb_lineno))
+    # def update_capital(self, time_stamp, value):
+    #     try:
+    #         conn = self.connect()
+    #         with conn:
+    #             cursor = conn.cursor()
+    #             cursor.execute("INSERT INTO capital (timestamp, capital) VALUES (%s,%s)", (time_stamp, value))
+    #     except sqlite3.IntegrityError as e:
+    #         print(e, '- Error in model.py: {} method update_capital'.format(e.__traceback__.tb_lineno))
 
-    def update_open_orders(self, id_, value=0, operation='update'):
-        """Esta función se encarga de actualizar los valores de la cantidad de acciones en el portadolio.
-        Esta función debe llamarse siempre que se ejecute una orden de venta"""
-        if operation == 'update':
-            try:
-                conn = self.connect()
-                strquery = 'UPDATE openOrders SET cantidad= %s WHERE id= %s'
-                values = (value, id_)
-                with conn:
-                    cursor = conn.cursor()
-                    cursor.execute(strquery, values)
-            except sqlite3.IntegrityError as e:
-                print(e)
-                print('No se puede modificar el capital en la base de datos')
-
-        elif operation == 'delete':
-            try:
-                conn = self.connect()
-                strquery = 'DELETE FROM openOrders WHERE id= %s'
-                values = (id_,)
-                with conn:
-                    cursor = conn.cursor()
-                    cursor.execute(strquery, values)
-                    # print('se ha elimiado la orden {} que estaba abierta'.format(id_))
-            except sqlite3.IntegrityError as e:
-                print(e)
-                print('No se puede modificar el capital en la base de datos')
+    # def update_open_orders(self, id_, value=0, operation='update'):
+    #     """Esta función se encarga de actualizar los valores de la cantidad de acciones en el portadolio.
+    #     Esta función debe llamarse siempre que se ejecute una orden de venta"""
+    #     if operation == 'update':
+    #         try:
+    #             conn = self.connect()
+    #             strquery = 'UPDATE openOrders SET cantidad= %s WHERE id= %s'
+    #             values = (value, id_)
+    #             with conn:
+    #                 cursor = conn.cursor()
+    #                 cursor.execute(strquery, values)
+    #         except sqlite3.IntegrityError as e:
+    #             print(e)
+    #             print('No se puede modificar el capital en la base de datos')
+    #
+    #     elif operation == 'delete':
+    #         try:
+    #             conn = self.connect()
+    #             strquery = 'DELETE FROM openOrders WHERE id= %s'
+    #             values = (id_,)
+    #             with conn:
+    #                 cursor = conn.cursor()
+    #                 cursor.execute(strquery, values)
+    #                 # print('se ha elimiado la orden {} que estaba abierta'.format(id_))
+    #         except sqlite3.IntegrityError as e:
+    #             print(e)
+    #             print('No se puede modificar el capital en la base de datos')
 
     def selectQuery(self, table_name, *columns, filter_table=None):
         """Este método se encarga de realizar las consultas a todas las tablas de la base de datos del proyecto. Es lo
@@ -170,28 +189,34 @@ class DatabaseController:
         cursor = ''
         conn = ''
         str_query = ''
-        if table_name == 'buyorders' or table_name == 'sellorders' or table_name == 'openorders':
-            if columns[0] == '*' and filter_table is None:
-                str_query = 'SELECT * FROM {0}'.format(table_name)
+        print('bu')
+        if table_name == 'files':
+            if columns[0] == 'file_name' and filter_table is None:
+                str_query = "SELECT {0} FROM {1}".format(columns[0], '.'.join([self.schema, table_name]))
+                print(str_query)
 
-            elif columns[0] != '*' and filter_table is None:
-                selected_columns = ', '.join(columns)
-                str_query = 'SELECT ' + selected_columns + ' FROM {0}'.format(table_name)
-
-            elif columns[0] == '*' and filter_table is not None:
-                str_query = "SELECT * FROM {0} WHERE id='{1}'".format(table_name, filter_table)
-
-            elif columns[0] != '*' and filter_table is not None:
-                selected_columns = ', '.join(columns)
-                str_query = "SELECT " + selected_columns + " FROM {0} WHERE id='{1}'".format(table_name, filter_table)
-
-        elif table_name == 'capital':
-            if (columns[0] == '*' or columns[0] == 'capital') and filter_table is None and table_name == 'capital':
-                str_query = 'SELECT {0} FROM {1} ORDER BY id_capital DESC'.format(columns[0], table_name)
-
-        elif table_name == 'users':
-            if columns[0] == '*' and filter_table is not None:
-                str_query = "SELECT {0} FROM {1} WHERE usuario='{2}'".format(columns[0], table_name, filter_table)
+        # if table_name == 'buyorders' or table_name == 'sellorders' or table_name == 'openorders':
+        #     if columns[0] == '*' and filter_table is None:
+        #         str_query = 'SELECT * FROM {0}'.format(table_name)
+        #
+        #     elif columns[0] != '*' and filter_table is None:
+        #         selected_columns = ', '.join(columns)
+        #         str_query = 'SELECT ' + selected_columns + ' FROM {0}'.format(table_name)
+        #
+        #     elif columns[0] == '*' and filter_table is not None:
+        #         str_query = "SELECT * FROM {0} WHERE id='{1}'".format(table_name, filter_table)
+        #
+        #     elif columns[0] != '*' and filter_table is not None:
+        #         selected_columns = ', '.join(columns)
+        #         str_query = "SELECT " + selected_columns + " FROM {0} WHERE id='{1}'".format(table_name, filter_table)
+        #
+        # elif table_name == 'capital':
+        #     if (columns[0] == '*' or columns[0] == 'capital') and filter_table is None and table_name == 'capital':
+        #         str_query = 'SELECT {0} FROM {1} ORDER BY id_capital DESC'.format(columns[0], table_name)
+        #
+        # elif table_name == 'users':
+        #     if columns[0] == '*' and filter_table is not None:
+        #         str_query = "SELECT {0} FROM {1} WHERE usuario='{2}'".format(columns[0], table_name, filter_table)
 
         if str_query != '':
             try:
@@ -199,7 +224,9 @@ class DatabaseController:
                 if conn is not None:
                     cursor = conn.cursor()
                     cursor.execute(str_query)
-                    query = cursor.fetchall()
+                    qu = list(cursor.fetchall())
+                    for i in qu:
+                        query.append(str(i[0]))
             except Exception as e:
                 print(e)
                 cursor.close()
@@ -215,56 +242,36 @@ class DatabaseController:
         else:
             return None
 
-    def __query_to_dict(self, query):
-        """Esta función se encarga de transformar los objetos producidos por la clase order en diccionarios. Esta función
-        es opcional; su uso node siempre se requiere"""
-        lst = []
-        for row in query:
-            dict_order = {OpenOrderElement.TimeStamp.name: row[OpenOrderElement.TimeStamp.value],
-                          OpenOrderElement.Id.name: row[OpenOrderElement.Id.value],
-                          OpenOrderElement.Ticker.name: row[OpenOrderElement.Ticker.value],
-                          OpenOrderElement.OrderType.name: row[OpenOrderElement.OrderType.value],
-                          OpenOrderElement.BuyPrice.name: row[OpenOrderElement.BuyPrice.value],
-                          OpenOrderElement.OpenCantidad.name: row[OpenOrderElement.OpenCantidad.value]}
-            lst.append(dict_order)
-        return lst
-
-    def load_open_orders(self):
-        """Este método se encarga de poner en memoria las ordenes abiertas en el portafokio de modo que el usuario pueda
-        verlas en la pantalla cada vez que vaya a abrir o cerrar una orden"""
-        conn = self.connect()
-        strquery = 'SELECT * FROM openorders'
-        with conn:
-            cur = conn.cursor()
-            try:
-                cur.execute(strquery)
-                query = cur.fetchall()
-                dict_query = self.__query_to_dict(query)
-                return dict_query
-            except Exception as e:
-                print(e, '- Error in model.py: {} method load_open_orders'.format(e.__traceback__.tb_lineno))
-                return None
-
-    def __config(self, filename='configpostgres.ini', section='postgresql'):
-        # create a parser
-        """Configura los parámetros para la conexión con la base de datos a través de la lectura de un
-        archivo de configuración de extención .ini"""
-        conf = ConfigParser()
-        try:
-            conf.read(filename)
-            db_query = {}
-            if conf.has_section(section):
-                params = conf.items(section)
-                for param in params:
-                    db_query[param[0]] = param[1]
-
-            return db_query
-
-        except Exception as e:
-            print(e, 'Section {0} not found in the {1} file'.format(section, filename))
-
 
 if __name__ == '__main__':
-    query = DatabaseController()
-    var = query.selectQuery('users', '*', filter_table='acpr87@gmail.com')
+    config = BulidConfiguraion()
+    dbController = DatabaseController(config)
+
+    date_rng = list(pd.date_range(start='2016/01/01', end='2019/10/31', freq='D'))
+    tmp = []
+
+
+    for fila in date_rng:
+        tmp.append(str(fila).split(' ')[0].split('-'))
+
+    contador = 0
+    for dat in tmp:
+        dat.insert(0, str(contador))
+        print(dat, '*****')
+        dbController.insert('day', dat)
+        contador += 1
+
+    print('finish')
+
+
+
+
+
+
+
+
+
+
+
+
 
