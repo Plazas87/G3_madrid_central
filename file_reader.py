@@ -37,6 +37,7 @@ class FileReader:
         for r, d, f in os.walk(self.pathName):
             file_temp = f
 
+        print(file_temp, 'archivos en la carpeta')
         for file in file_temp:
             for ext in self.fileExtension:
                 if ext in file:

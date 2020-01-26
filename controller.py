@@ -16,74 +16,137 @@ class Controller:
                                                           extencion=['.txt', '.csv'])
 
         self.airQualityStation = ClimateStation(rutaArchivo=configuration.air_stations_path,
-                                                extencion='.csv')
+                                                extencion=['.csv'])
 
         self.trafficDataController = TrafficFileReader(rutaArchivo=configuration.traffic_data_path,
-                                                       extencion='.csv')
+                                                       extencion=['.csv'])
 
         self.trafficStation = TrafficStation(rutaArchivo=configuration.traffic_station_path,
-                                             extencion='.csv')
+                                             extencion=['.csv'])
 
-    def check_files(self):
-        files_to_read = []
+    def __check_files(self):
         logging.info('Look for files that has been already loaded')
-        query = self.dbController.selectQuery('files', 'file_name')
+        query = self.dbController.selectQuery('files', 'file_name', info='Checking for files in files table')
         print('Previously read files', query)
         logging.info('Previously read files: ' + str(query))
+
+        return query
+
+    def __check_files_by_path(self, query, obj_files, path):
+        logging.info('Checkin files in: {}'.format(path))
+        files_read = []
         try:
             # Comprueba que archivos an sido leidos previamente, y por lo tanto no se deben volver a leer
-            for i in self.airQualityDataController.files:
+            for i in obj_files:
                 if i in query:
                     logging.info('File: ' + str(i) + ' Already loaded')
                     print('No se carga')
                     pass
                 else:
                     print(i, 'Se carga')
-                    files_to_read.append(i)
+                    files_read.append(i)
                     print('Controller ******')
 
         except Exception as e:
             logging.error("Can't read files from database " + str(e))
 
-        return files_to_read
+        return files_read
 
     def read_data(self):
         """Esta función se encarga de leer los archivos que se encuentran en cada una de las ubicaciones del repositorio,
         si el archivo ya ha sido leido, no se carga nuevaente, de lo contrario el archivo se carga normalmente."""
         try:
-            load_files = self.check_files()
-            logging.info('New files: ' + str(load_files))
-            _ = []
-            for file in load_files:
+            load_files = self.__check_files()
+            # Cargar data de calidad del aire
+            files_to_read = self.__check_files_by_path(load_files,
+                                                       self.airQualityDataController.files,
+                                                       self.airQualityDataController.pathName)
 
-                if file in self.airQualityDataController.files:
-                    _.append(file)
-                    self.airQualityDataController.load_files(_)
-                    # _ =[]
+            if len(files_to_read) != 0:
+                self.airQualityDataController.load_files(files_to_read)
+                print(self.airQualityDataController.columnNames)
+                self.dbController.insert('files', files_to_read,
+                                         'Insert files from {} into files table'.format(self.airQualityDataController.pathName))
 
-                if file in self.airQualityStation.files:
-                    _.append(file)
-                    self.airQualityStation.load_files(_)
-                    # _ = []
+            else:
+                logging.info('Nothing new to read in: {}'.format(self.airQualityDataController.pathName))
 
-                if file in self.trafficDataController.files:
-                    _.append(file)
-                    self.trafficDataController.load_files(_)
-                    # _ = []
+            # read files from the air quality station path
+            files_to_read = self.__check_files_by_path(load_files,
+                                                       self.airQualityStation.files,
+                                                       self.airQualityStation.pathName)
+            if len(files_to_read) != 0:
+                self.airQualityStation.load_files()
+                self.dbController.insert('files', files_to_read,
+                                         'Insert files from {} into file table'.format(self.airQualityStation.pathName))
 
-                if file in self.trafficStation.files:
-                    _.append(file)
-                    self.trafficStation.load_files(_)
-                    # _ = []
+            else:
+                logging.info('Nothing new to read in {} '.format(self.airQualityStation.pathName))
 
-                _ = []
+                # read files from traffic flow path
+                files_to_read = self.__check_files_by_path(load_files,
+                                                           self.trafficDataController.files,
+                                                           self.trafficDataController.pathName)
+                if len(files_to_read) != 0:
+                    self.trafficDataController.load_files()
+                    self.dbController.insert('files', files_to_read,
+                                             'Insert files from {} into file table'.format(
+                                                 self.trafficDataController.pathName))
+
+                else:
+                    logging.info('Nothing new to read in {} '.format(self.trafficDataController.pathName))
+
+                    # read files from traffic flow station path
+                    files_to_read = self.__check_files_by_path(load_files,
+                                                               self.trafficStation.files,
+                                                               self.trafficStation.pathName)
+                    if len(files_to_read) != 0:
+                        self.trafficStation.load_files()
+                        self.dbController.insert('files', files_to_read,
+                                                 'Insert files from {} into file table'.format(
+                                                     self.trafficStation.pathName))
+
+                    else:
+                        logging.info('Nothing new to read in {} '.format(self.trafficStation.pathName))
+
+            # files_to_read = self.__check_files_by_path(load_files, self.trafficDataController.files)
+            # self.trafficDataController.load_files(files_to_read)
+            #
+            # files_to_read = self.__check_files_by_path(load_files, self.trafficDataController.files)
+            # self.trafficDataController.load_files(files_to_read)
+            #
+            # files_to_read = self.__check_files_by_path(load_files, self.trafficStation.files)
+            # self.trafficStation.load_files(files_to_read)
+
+
+            # if fil in self.airQualityDataController.files:
+            #     _.append(fil)
+            #     self.airQualityDataController.load_files(_)
+            #     # _ =[]
+            #
+            # if fil in self.airQualityStation.files:
+            #     _.append(fil)
+            #     self.airQualityStation.load_files(_)
+            #     # _ = []
+            #
+            # if fil in self.trafficDataController.files:
+            #     _.append(fil)
+            #     self.trafficDataController.load_files(_)
+            #     # _ = []
+            #
+            # if fil in self.trafficStation.files:
+            #     _.append(fil)
+            #     self.trafficStation.load_files(_)
+            #     # _ = []
+            #
+            # _ = []
 
         except Exception as e:
             print(e)
 
-        if len(load_files) != 0:
-            self.dbController.insert('files', load_files)
-            pass
+        # if len(load_files) != 0:
+        #     self.dbController.insert('files', load_files)
+        #     pass
 
         # readed_files = self.check_files()
         # files_to_read = []

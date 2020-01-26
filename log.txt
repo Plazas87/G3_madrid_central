@@ -1,78 +1,195 @@
-2020-01-24 00:17:00,925;INFO;root;built_configuration;__init__;Built main configuration object
-2020-01-24 00:17:00,925;INFO;root;controller;__init__;Starting controller
-2020-01-24 00:17:00,925;INFO;root;db_controller;__init__;Starting database controller
-2020-01-24 00:17:00,925;INFO;root;climate_file_reader;__init__;Creating Climate file reader object
-2020-01-24 00:17:00,925;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
-2020-01-24 00:17:00,925;INFO;root;file_reader;search_for_files;Total files : ['01.txt', 'abr_mo19.csv', 'ago_mo19.csv', 'ene_mo19.csv', 'may_mo19.csv', 'oct_mo19.csv', 'sep_mo19.csv']
-2020-01-24 00:17:00,925;INFO;root;climate_station_reader;__init__;Creating Climate station reader object
-2020-01-24 00:17:00,925;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
-2020-01-24 00:17:00,929;INFO;root;file_reader;search_for_files;Total files : []
-2020-01-24 00:17:00,929;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/trafico_historico_desde_2013/
-2020-01-24 00:17:00,929;INFO;root;file_reader;search_for_files;Total files : []
-2020-01-24 00:17:00,929;INFO;root;traffic_station_reader;__init__;Creating Climate station reader object
-2020-01-24 00:17:00,929;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/ubicacion_puntos_medicion_trafico/
-2020-01-24 00:17:00,929;INFO;root;file_reader;search_for_files;Total files : []
-2020-01-24 00:17:00,929;INFO;root;controller;check_files;Look for files that has been already loaded
-2020-01-24 00:17:00,929;INFO;root;db_controller;connect;Connecting with database
-2020-01-24 00:17:00,965;INFO;root;db_controller;close_connection;Closing the connection with database
-2020-01-24 00:17:00,965;INFO;root;controller;check_files;Previously read files: ['01.txt', 'abr_mo19.csv', 'ago_mo19.csv', 'ene_mo19.csv', 'may_mo19.csv', 'oct_mo19.csv', 'sep_mo19.csv']
-2020-01-24 00:17:00,965;INFO;root;controller;check_files;File: 01.txt Already loaded
-2020-01-24 00:17:00,965;INFO;root;controller;check_files;File: abr_mo19.csv Already loaded
-2020-01-24 00:17:00,965;INFO;root;controller;check_files;File: ago_mo19.csv Already loaded
-2020-01-24 00:17:00,965;INFO;root;controller;check_files;File: ene_mo19.csv Already loaded
-2020-01-24 00:17:00,965;INFO;root;controller;check_files;File: may_mo19.csv Already loaded
-2020-01-24 00:17:00,965;INFO;root;controller;check_files;File: oct_mo19.csv Already loaded
-2020-01-24 00:17:00,965;INFO;root;controller;check_files;File: sep_mo19.csv Already loaded
-2020-01-24 00:17:00,965;INFO;root;controller;read_data;New files: []
-2020-01-24 00:20:24,120;INFO;root;built_configuration;__init__;Built main configuration object
-2020-01-24 00:20:24,120;INFO;root;controller;__init__;Starting controller
-2020-01-24 00:20:24,120;INFO;root;db_controller;__init__;Starting database controller
-2020-01-24 00:20:24,120;INFO;root;climate_file_reader;__init__;Creating Climate file reader object
-2020-01-24 00:20:24,120;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
-2020-01-24 00:20:24,120;INFO;root;file_reader;search_for_files;Total files : ['abr_mo19.csv', 'ago_mo19.csv', 'feb_mo19.csv']
-2020-01-24 00:20:24,120;INFO;root;climate_station_reader;__init__;Creating Climate station reader object
-2020-01-24 00:20:24,120;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
-2020-01-24 00:20:24,120;INFO;root;file_reader;search_for_files;Total files : []
-2020-01-24 00:20:24,120;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/trafico_historico_desde_2013/
-2020-01-24 00:20:24,120;INFO;root;file_reader;search_for_files;Total files : []
-2020-01-24 00:20:24,120;INFO;root;traffic_station_reader;__init__;Creating Climate station reader object
-2020-01-24 00:20:24,120;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/ubicacion_puntos_medicion_trafico/
-2020-01-24 00:20:24,120;INFO;root;file_reader;search_for_files;Total files : []
-2020-01-24 00:20:24,120;INFO;root;controller;check_files;Look for files that has been already loaded
-2020-01-24 00:20:24,120;INFO;root;db_controller;connect;Connecting with database
-2020-01-24 00:20:24,264;INFO;root;db_controller;close_connection;Closing the connection with database
-2020-01-24 00:20:24,264;INFO;root;controller;check_files;Previously read files: []
-2020-01-24 00:20:24,264;INFO;root;controller;read_data;New files: ['abr_mo19.csv', 'ago_mo19.csv', 'feb_mo19.csv']
-2020-01-24 00:20:24,264;INFO;root;climate_file_reader;load_files;Start loading files
-2020-01-24 00:20:24,264;INFO;root;climate_file_reader;__prepare_data;Reshaping data: abr_mo19.csv
-2020-01-24 00:20:28,541;INFO;root;climate_file_reader;__prepare_data;abr_mo19.csv Load success
-2020-01-24 00:20:28,545;INFO;root;climate_file_reader;load_files;Start loading files
-2020-01-24 00:20:28,545;INFO;root;climate_file_reader;__prepare_data;Reshaping data: ago_mo19.csv
-2020-01-24 00:20:32,433;INFO;root;climate_file_reader;__prepare_data;ago_mo19.csv Load success
-2020-01-24 00:20:32,437;INFO;root;climate_file_reader;load_files;Start loading files
-2020-01-24 00:20:32,437;INFO;root;climate_file_reader;__prepare_data;Reshaping data: feb_mo19.csv
-2020-01-24 00:20:35,961;INFO;root;climate_file_reader;__prepare_data;feb_mo19.csv Load success
-2020-01-24 00:20:35,961;INFO;root;db_controller;connect;Connecting with database
-2020-01-24 00:20:35,993;INFO;root;db_controller;close_connection;Closing the connection with database
-2020-01-24 10:14:23,851;INFO;root;built_configuration;__init__;Built main configuration object
-2020-01-24 10:14:23,851;INFO;root;controller;__init__;Starting controller
-2020-01-24 10:14:23,851;INFO;root;db_controller;__init__;Starting database controller
-2020-01-24 10:14:23,851;INFO;root;climate_file_reader;__init__;Creating Climate file reader object
-2020-01-24 10:14:23,851;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
-2020-01-24 10:14:23,851;INFO;root;file_reader;search_for_files;Total files : ['abr_mo19.csv', 'ago_mo19.csv', 'feb_mo19.csv']
-2020-01-24 10:14:23,851;INFO;root;climate_station_reader;__init__;Creating Climate station reader object
-2020-01-24 10:14:23,851;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
-2020-01-24 10:14:23,851;INFO;root;file_reader;search_for_files;Total files : []
-2020-01-24 10:14:23,851;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/trafico_historico_desde_2013/
-2020-01-24 10:14:23,851;INFO;root;file_reader;search_for_files;Total files : []
-2020-01-24 10:14:23,851;INFO;root;traffic_station_reader;__init__;Creating Climate station reader object
-2020-01-24 10:14:23,851;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/ubicacion_puntos_medicion_trafico/
-2020-01-24 10:14:23,851;INFO;root;file_reader;search_for_files;Total files : []
-2020-01-24 10:14:23,851;INFO;root;controller;check_files;Look for files that has been already loaded
-2020-01-24 10:14:23,851;INFO;root;db_controller;connect;Connecting with database
-2020-01-24 10:14:23,944;INFO;root;db_controller;close_connection;Closing the connection with database
-2020-01-24 10:14:23,944;INFO;root;controller;check_files;Previously read files: ['abr_mo19.csv', 'ago_mo19.csv', 'feb_mo19.csv']
-2020-01-24 10:14:23,944;INFO;root;controller;check_files;File: abr_mo19.csv Already loaded
-2020-01-24 10:14:23,944;INFO;root;controller;check_files;File: ago_mo19.csv Already loaded
-2020-01-24 10:14:23,944;INFO;root;controller;check_files;File: feb_mo19.csv Already loaded
-2020-01-24 10:14:23,944;INFO;root;controller;read_data;New files: []
+2020-01-26 11:29:08,280;INFO;root;built_configuration;__init__;Built main configuration object
+2020-01-26 11:29:08,281;INFO;root;controller;__init__;Starting controller
+2020-01-26 11:29:08,281;INFO;root;db_controller;__init__;Starting database controller
+2020-01-26 11:29:08,281;INFO;root;climate_file_reader;__init__;Creating Climate file reader object
+2020-01-26 11:29:08,281;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:29:08,281;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:29:08,281;INFO;root;climate_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:29:08,281;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:29:08,282;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:29:08,282;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:29:08,282;INFO;root;file_reader;search_for_files;Total files : ['nov_mo19.csv']
+2020-01-26 11:29:08,282;INFO;root;traffic_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:29:08,282;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/ubicacion_puntos_medicion_trafico/
+2020-01-26 11:29:08,282;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:29:08,282;INFO;root;controller;__check_files;Look for files that has been already loaded
+2020-01-26 11:29:08,282;INFO;root;db_controller;connect;Connecting with database: Checking for files in files table
+2020-01-26 11:29:08,320;INFO;root;db_controller;close_connection;Closing the connection with database
+2020-01-26 11:29:08,320;INFO;root;controller;__check_files;Previously read files: ['abr_mo19.csv', 'ago_mo19.csv', 'ene_mo19.csv']
+2020-01-26 11:29:08,320;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:29:08,320;INFO;root;controller;read_data;Nothing new to read in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:29:08,320;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:29:08,320;INFO;root;controller;read_data;Nothing new to read in resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/ 
+2020-01-26 11:29:08,320;INFO;root;controller;__check_files_by_path;Checkin files in: resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:34:10,824;INFO;root;built_configuration;__init__;Built main configuration object
+2020-01-26 11:34:10,825;INFO;root;controller;__init__;Starting controller
+2020-01-26 11:34:10,825;INFO;root;db_controller;__init__;Starting database controller
+2020-01-26 11:34:10,825;INFO;root;climate_file_reader;__init__;Creating Climate file reader object
+2020-01-26 11:34:10,825;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:34:10,826;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:34:10,826;INFO;root;climate_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:34:10,826;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:34:10,826;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:34:10,826;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:34:10,826;INFO;root;file_reader;search_for_files;Total files : ['nov_mo19.csv']
+2020-01-26 11:34:10,827;INFO;root;traffic_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:34:10,827;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/ubicacion_puntos_medicion_trafico/
+2020-01-26 11:34:10,827;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:34:10,829;INFO;root;controller;__check_files;Look for files that has been already loaded
+2020-01-26 11:34:10,829;INFO;root;db_controller;connect;Connecting with database: Checking for files in files table
+2020-01-26 11:34:10,875;INFO;root;db_controller;close_connection;Closing the connection with database
+2020-01-26 11:34:10,876;INFO;root;controller;__check_files;Previously read files: ['abr_mo19.csv', 'ago_mo19.csv', 'ene_mo19.csv']
+2020-01-26 11:34:10,876;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:34:10,876;INFO;root;controller;read_data;Nothing new to read in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:34:10,876;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:34:10,876;INFO;root;controller;read_data;Nothing new to read in resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/ 
+2020-01-26 11:34:31,596;INFO;root;controller;__check_files_by_path;Checkin files in: resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:49:02,172;INFO;root;built_configuration;__init__;Built main configuration object
+2020-01-26 11:49:02,172;INFO;root;controller;__init__;Starting controller
+2020-01-26 11:49:02,172;INFO;root;db_controller;__init__;Starting database controller
+2020-01-26 11:49:02,172;INFO;root;climate_file_reader;__init__;Creating Climate file reader object
+2020-01-26 11:49:02,172;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:49:02,172;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:49:02,172;INFO;root;climate_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:49:02,172;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:49:02,172;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:49:02,172;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:49:02,172;INFO;root;file_reader;search_for_files;Total files : ['nov_mo19.csv']
+2020-01-26 11:49:02,172;INFO;root;traffic_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:49:02,172;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/ubicacion_puntos_medicion_trafico/
+2020-01-26 11:49:02,172;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:49:02,172;INFO;root;controller;__check_files;Look for files that has been already loaded
+2020-01-26 11:49:02,172;INFO;root;db_controller;connect;Connecting with database: Checking for files in files table
+2020-01-26 11:49:02,213;INFO;root;db_controller;close_connection;Closing the connection with database
+2020-01-26 11:49:02,213;INFO;root;controller;__check_files;Previously read files: ['abr_mo19.csv', 'ago_mo19.csv', 'ene_mo19.csv']
+2020-01-26 11:49:02,213;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:49:02,213;INFO;root;controller;read_data;Nothing new to read in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:49:02,213;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:49:02,213;INFO;root;controller;read_data;Nothing new to read in resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/ 
+2020-01-26 11:49:02,213;INFO;root;controller;__check_files_by_path;Checkin files in: resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:49:02,213;INFO;root;file_reader;load_files;Start loading files
+2020-01-26 11:49:02,254;INFO;root;file_reader;load_files;nov_mo19.csv Load success
+2020-01-26 11:49:02,254;INFO;root;db_controller;connect;Connecting with database: Insert files from resources/trafico/trafico_historico_desde_2013/ into file table
+2020-01-26 11:49:02,285;INFO;root;db_controller;close_connection;Closing the connection with database
+2020-01-26 11:55:43,070;INFO;root;built_configuration;__init__;Built main configuration object
+2020-01-26 11:55:43,070;INFO;root;controller;__init__;Starting controller
+2020-01-26 11:55:43,070;INFO;root;db_controller;__init__;Starting database controller
+2020-01-26 11:55:43,070;INFO;root;climate_file_reader;__init__;Creating Climate file reader object
+2020-01-26 11:55:43,070;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:55:43,071;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:55:43,071;INFO;root;climate_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:55:43,071;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:55:43,071;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:55:43,071;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:55:43,071;INFO;root;file_reader;search_for_files;Total files : ['nov_mo19.csv']
+2020-01-26 11:55:43,071;INFO;root;traffic_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:55:43,071;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/ubicacion_puntos_medicion_trafico/
+2020-01-26 11:55:43,071;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:55:43,071;INFO;root;controller;__check_files;Look for files that has been already loaded
+2020-01-26 11:55:43,071;INFO;root;db_controller;connect;Connecting with database: Checking for files in files table
+2020-01-26 11:55:43,106;INFO;root;db_controller;close_connection;Closing the connection with database
+2020-01-26 11:55:43,107;INFO;root;controller;__check_files;Previously read files: []
+2020-01-26 11:55:43,107;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:55:43,107;INFO;root;controller;read_data;Nothing new to read in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:55:43,107;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:55:43,107;INFO;root;controller;read_data;Nothing new to read in resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/ 
+2020-01-26 11:55:43,107;INFO;root;controller;__check_files_by_path;Checkin files in: resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:55:43,107;INFO;root;file_reader;load_files;Start loading files
+2020-01-26 11:55:43,135;INFO;root;file_reader;load_files;nov_mo19.csv Load success
+2020-01-26 11:55:43,138;INFO;root;db_controller;connect;Connecting with database: Insert files from resources/trafico/trafico_historico_desde_2013/ into file table
+2020-01-26 11:55:43,170;INFO;root;db_controller;close_connection;Closing the connection with database
+2020-01-26 11:56:44,265;INFO;root;built_configuration;__init__;Built main configuration object
+2020-01-26 11:56:44,266;INFO;root;controller;__init__;Starting controller
+2020-01-26 11:56:44,266;INFO;root;db_controller;__init__;Starting database controller
+2020-01-26 11:56:44,266;INFO;root;climate_file_reader;__init__;Creating Climate file reader object
+2020-01-26 11:56:44,266;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:56:44,266;INFO;root;file_reader;search_for_files;Total files : ['abr_mo19.csv', 'ago_mo19.csv']
+2020-01-26 11:56:44,266;INFO;root;climate_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:56:44,267;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:56:44,267;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:56:44,267;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:56:44,267;INFO;root;file_reader;search_for_files;Total files : ['nov_mo19.csv']
+2020-01-26 11:56:44,267;INFO;root;traffic_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:56:44,267;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/ubicacion_puntos_medicion_trafico/
+2020-01-26 11:56:44,267;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:56:44,267;INFO;root;controller;__check_files;Look for files that has been already loaded
+2020-01-26 11:56:44,267;INFO;root;db_controller;connect;Connecting with database: Checking for files in files table
+2020-01-26 11:56:44,303;INFO;root;db_controller;close_connection;Closing the connection with database
+2020-01-26 11:56:44,303;INFO;root;controller;__check_files;Previously read files: ['nov_mo19.csv']
+2020-01-26 11:56:44,303;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:56:44,303;INFO;root;climate_file_reader;load_files;Start loading files
+2020-01-26 11:56:44,303;INFO;root;climate_file_reader;__prepare_data;Reshaping data: abr_mo19.csv
+2020-01-26 11:56:48,304;INFO;root;climate_file_reader;__prepare_data;abr_mo19.csv Load success
+2020-01-26 11:56:48,305;INFO;root;climate_file_reader;__prepare_data;Reshaping data: ago_mo19.csv
+2020-01-26 11:56:52,349;INFO;root;climate_file_reader;__prepare_data;ago_mo19.csv Load success
+2020-01-26 11:56:52,352;INFO;root;db_controller;connect;Connecting with database: Insert files from resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/ into files table
+2020-01-26 11:56:52,384;INFO;root;db_controller;close_connection;Closing the connection with database
+2020-01-26 11:56:52,384;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:56:52,384;INFO;root;controller;read_data;Nothing new to read in resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/ 
+2020-01-26 11:56:52,384;INFO;root;controller;__check_files_by_path;Checkin files in: resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:56:52,384;INFO;root;controller;__check_files_by_path;File: nov_mo19.csv Already loaded
+2020-01-26 11:56:52,385;INFO;root;controller;read_data;Nothing new to read in resources/trafico/trafico_historico_desde_2013/ 
+2020-01-26 11:56:52,385;INFO;root;controller;__check_files_by_path;Checkin files in: resources/trafico/ubicacion_puntos_medicion_trafico/
+2020-01-26 11:56:52,385;INFO;root;controller;read_data;Nothing new to read in resources/trafico/ubicacion_puntos_medicion_trafico/ 
+2020-01-26 11:58:51,466;INFO;root;built_configuration;__init__;Built main configuration object
+2020-01-26 11:58:51,467;INFO;root;controller;__init__;Starting controller
+2020-01-26 11:58:51,467;INFO;root;db_controller;__init__;Starting database controller
+2020-01-26 11:58:51,467;INFO;root;climate_file_reader;__init__;Creating Climate file reader object
+2020-01-26 11:58:51,467;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:58:51,467;INFO;root;file_reader;search_for_files;Total files : ['abr_mo19.csv', 'ago_mo19.csv']
+2020-01-26 11:58:51,467;INFO;root;climate_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:58:51,467;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:58:51,467;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:58:51,468;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:58:51,468;INFO;root;file_reader;search_for_files;Total files : ['nov_mo19.csv']
+2020-01-26 11:58:51,468;INFO;root;traffic_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:58:51,468;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/ubicacion_puntos_medicion_trafico/
+2020-01-26 11:58:51,468;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:58:51,468;INFO;root;controller;__check_files;Look for files that has been already loaded
+2020-01-26 11:58:51,468;INFO;root;db_controller;connect;Connecting with database: Checking for files in files table
+2020-01-26 11:58:51,534;INFO;root;db_controller;close_connection;Closing the connection with database
+2020-01-26 11:58:51,535;INFO;root;controller;__check_files;Previously read files: ['nov_mo19.csv', 'abr_mo19.csv', 'ago_mo19.csv']
+2020-01-26 11:58:51,535;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:58:51,535;INFO;root;controller;__check_files_by_path;File: abr_mo19.csv Already loaded
+2020-01-26 11:58:51,535;INFO;root;controller;__check_files_by_path;File: ago_mo19.csv Already loaded
+2020-01-26 11:58:51,535;INFO;root;controller;read_data;Nothing new to read in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:58:51,535;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:58:51,535;INFO;root;controller;read_data;Nothing new to read in resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/ 
+2020-01-26 11:58:51,535;INFO;root;controller;__check_files_by_path;Checkin files in: resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:58:51,535;INFO;root;controller;__check_files_by_path;File: nov_mo19.csv Already loaded
+2020-01-26 11:58:51,535;INFO;root;controller;read_data;Nothing new to read in resources/trafico/trafico_historico_desde_2013/ 
+2020-01-26 11:58:51,536;INFO;root;controller;__check_files_by_path;Checkin files in: resources/trafico/ubicacion_puntos_medicion_trafico/
+2020-01-26 11:58:51,536;INFO;root;controller;read_data;Nothing new to read in resources/trafico/ubicacion_puntos_medicion_trafico/ 
+2020-01-26 11:59:03,516;INFO;root;built_configuration;__init__;Built main configuration object
+2020-01-26 11:59:03,517;INFO;root;controller;__init__;Starting controller
+2020-01-26 11:59:03,517;INFO;root;db_controller;__init__;Starting database controller
+2020-01-26 11:59:03,517;INFO;root;climate_file_reader;__init__;Creating Climate file reader object
+2020-01-26 11:59:03,517;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:59:03,517;INFO;root;file_reader;search_for_files;Total files : ['abr_mo19.csv', 'ago_mo19.csv']
+2020-01-26 11:59:03,517;INFO;root;climate_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:59:03,517;INFO;root;file_reader;search_for_files;Looking for files in : resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:59:03,517;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:59:03,517;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:59:03,517;INFO;root;file_reader;search_for_files;Total files : ['nov_mo19.csv']
+2020-01-26 11:59:03,517;INFO;root;traffic_station_reader;__init__;Creating Climate station reader object
+2020-01-26 11:59:03,517;INFO;root;file_reader;search_for_files;Looking for files in : resources/trafico/ubicacion_puntos_medicion_trafico/
+2020-01-26 11:59:03,518;INFO;root;file_reader;search_for_files;Total files : []
+2020-01-26 11:59:03,518;INFO;root;controller;__check_files;Look for files that has been already loaded
+2020-01-26 11:59:03,518;INFO;root;db_controller;connect;Connecting with database: Checking for files in files table
+2020-01-26 11:59:03,673;INFO;root;db_controller;close_connection;Closing the connection with database
+2020-01-26 11:59:03,674;INFO;root;controller;__check_files;Previously read files: []
+2020-01-26 11:59:03,674;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/
+2020-01-26 11:59:03,674;INFO;root;climate_file_reader;load_files;Start loading files
+2020-01-26 11:59:03,674;INFO;root;climate_file_reader;__prepare_data;Reshaping data: abr_mo19.csv
+2020-01-26 11:59:07,739;INFO;root;climate_file_reader;__prepare_data;abr_mo19.csv Load success
+2020-01-26 11:59:07,740;INFO;root;climate_file_reader;__prepare_data;Reshaping data: ago_mo19.csv
+2020-01-26 11:59:11,746;INFO;root;climate_file_reader;__prepare_data;ago_mo19.csv Load success
+2020-01-26 11:59:11,749;INFO;root;db_controller;connect;Connecting with database: Insert files from resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/ into files table
+2020-01-26 11:59:11,781;INFO;root;db_controller;close_connection;Closing the connection with database
+2020-01-26 11:59:11,781;INFO;root;controller;__check_files_by_path;Checkin files in: resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/
+2020-01-26 11:59:11,782;INFO;root;controller;read_data;Nothing new to read in resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/ 
+2020-01-26 11:59:11,782;INFO;root;controller;__check_files_by_path;Checkin files in: resources/trafico/trafico_historico_desde_2013/
+2020-01-26 11:59:11,782;INFO;root;file_reader;load_files;Start loading files
+2020-01-26 11:59:11,811;INFO;root;file_reader;load_files;nov_mo19.csv Load success
+2020-01-26 11:59:11,813;INFO;root;db_controller;connect;Connecting with database: Insert files from resources/trafico/trafico_historico_desde_2013/ into file table
+2020-01-26 11:59:11,846;INFO;root;db_controller;close_connection;Closing the connection with database

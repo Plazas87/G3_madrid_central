@@ -27,8 +27,9 @@ class DatabaseController:
             cls.instance = super(DatabaseController, cls).__new__(cls)  # lo creamos
         return cls.instance
 
-    def connect(self):
-        logging.info('Connecting with database')
+    def connect(self, process_information='put some here'):
+        logging.info('Connecting with database: ' + str(process_information))
+        print('Connecting with database')
         try:
             # connect to the PostgreSQL server
             conn = None
@@ -54,19 +55,17 @@ class DatabaseController:
             logging.error('Unable to close the connection')
             return None
 
-    def insert(self, table, data):
+    def insert(self, table, data, info=' '):
         # Crea la conexión con la base de datos
-        conn = self.connect()
+        conn = self.connect(process_information=info)
         if conn is not None:
             if table == 'files':
                 try:
                     query = "INSERT INTO {0} (file_name) VALUES (%s)".format('.'.join([self.schema, table]))
-                    # print(query, value)
-                    print(data, '***')
                     cursor = conn.cursor()
                     for value in data:
                         cursor.execute(query, (value,))
-                        print('La orden ha sido almacenada correctamente en la base de datos')
+                        print('Almacenada correctamente en la base de datos')
 
                     conn.commit()
 
@@ -182,18 +181,16 @@ class DatabaseController:
     #             print(e)
     #             print('No se puede modificar el capital en la base de datos')
 
-    def selectQuery(self, table_name, *columns, filter_table=None):
+    def selectQuery(self, table_name, *columns, filter_table=None, info=' '):
         """Este método se encarga de realizar las consultas a todas las tablas de la base de datos del proyecto. Es lo
         suficientemente versatil como para entender varios tipos de consultas a las diferentes tablas"""
         query = []
         cursor = ''
         conn = ''
         str_query = ''
-        print('bu')
         if table_name == 'files':
             if columns[0] == 'file_name' and filter_table is None:
                 str_query = "SELECT {0} FROM {1}".format(columns[0], '.'.join([self.schema, table_name]))
-                print(str_query)
 
         # if table_name == 'buyorders' or table_name == 'sellorders' or table_name == 'openorders':
         #     if columns[0] == '*' and filter_table is None:
@@ -220,7 +217,7 @@ class DatabaseController:
 
         if str_query != '':
             try:
-                conn = self.connect()
+                conn = self.connect(process_information=info)
                 if conn is not None:
                     cursor = conn.cursor()
                     cursor.execute(str_query)

@@ -85,6 +85,10 @@ class ClimateFileReader(fr.FileReader):
         data_3 = data_3.astype({'HORA': int})
         data_3.HORA = data_3.HORA - 1
 
+        # Reorganizar las columnas para a justarse a el modelo de la base de datos
+
+        data_3 =  data_3[['ESTACION']]
+
         logging.info("{} Load success".format(file_name))
         return data_3
 
