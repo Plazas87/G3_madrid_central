@@ -57,16 +57,19 @@ class Controller:
         si el archivo ya ha sido leido, no se carga nuevaente, de lo contrario el archivo se carga normalmente."""
         try:
             load_files = self.__check_files()
-            # Cargar data de calidad del aire
+            # read files from the air quality path
             files_to_read = self.__check_files_by_path(load_files,
                                                        self.airQualityDataController.files,
                                                        self.airQualityDataController.pathName)
 
             if len(files_to_read) != 0:
-                self.airQualityDataController.load_files(files_to_read)
-                print(self.airQualityDataController.columnNames)
-                self.dbController.insert('files', files_to_read,
-                                         'Insert files from {} into files table'.format(self.airQualityDataController.pathName))
+                if self.airQualityDataController.load_files(files_to_read):
+                    print(self.airQualityDataController.columnNames, '****** from controller')
+                    self.dbController.insert('files',
+                                             files_to_read,
+                                             'Insert files from {} into files table'.format(self.airQualityDataController.pathName))
+                else:
+                    logging.error('No se pudo cargar la tabla')
 
             else:
                 logging.info('Nothing new to read in: {}'.format(self.airQualityDataController.pathName))

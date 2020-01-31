@@ -13,7 +13,7 @@ class ClimateFileReader(fr.FileReader):
         logging.info('Creating Climate file reader object')
         fr.FileReader.__init__(self, rutaArchivo, extencion)
 
-    def load_files(self, files_to_read):
+    def load_files(self, files_to_read=''):
         """Esta función se encarga de leer todos los archivos en el directorio que cumplen
         con el criterio de la extención"""
         logging.info('Start loading files')
@@ -30,12 +30,14 @@ class ClimateFileReader(fr.FileReader):
                 continue
 
         try:
-            self.mainTable = pd.concat(temp_table, sort=True)
+            self.mainTable = pd.concat(temp_table)
             self.columnNames = self.mainTable.columns
+            return True
 
         except Exception as e:
             print('Exception : {}'.format(e))
             logging.error("Exception: can't concatenate tables - {0}".format(e))
+            return False
 
     def __prepare_data(self, path_name, file_name):
         strfile = path_name + file_name
@@ -85,12 +87,25 @@ class ClimateFileReader(fr.FileReader):
         data_3 = data_3.astype({'HORA': int})
         data_3.HORA = data_3.HORA - 1
 
-        # Reorganizar las columnas para a justarse a el modelo de la base de datos
+        # Sea agrega una columna que puede servir como indice.
+        data_3['TIMESTAMP'] = 0
 
-        data_3 =  data_3[['ESTACION']]
+        data_3['TIMESTAMP'] = data_3.apply(lambda fila: self.__process_timestamp(fila), axis=1)
+
+        # Reorganizar las columnas para a justarse a el modelo de la base de datos
+        data_3 = self.__reorder_columns(data_3)
 
         logging.info("{} Load success".format(file_name))
         return data_3
+
+    def __process_timestamp(self, fila):
+        # return pd.datetime(fila.ANO, fila.MES, fila.DIA)
+        return int(''.join([str(fila.ANO), str(fila.MES), str(fila.DIA)]))
+
+    def __reorder_columns(self, table):
+        table = table[['ESTACION', 'TIMESTAMP', 'HORA', 'MAGNITUD', 'VALOR', 'VALIDEZ']]
+        return table
+
 
 
 if __name__ == '__main__':
@@ -102,6 +117,7 @@ if __name__ == '__main__':
     c = ClimateFileReader(rutaArchivo='resources/calidad_aire_madrid/datos_horarios_anos_2001_2019/', extencion='.csv')
     for name, valor in c.__dict__.items():
         print('{0}: {1}'.format(name, valor))
+
     c.load_files()
     print(c.mainTable)
     print(sys.getsizeof(c.mainTable))

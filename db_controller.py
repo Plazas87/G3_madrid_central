@@ -102,6 +102,27 @@ class DatabaseController:
                     print("PostgreSQL connection is closed")
                     return query
 
+            if table == 'time':
+                try:
+                    query = "INSERT INTO {0} VALUES (%s, %s)".format('.'.join([self.schema, table]))
+                    cursor = conn.cursor()
+                    cursor.execute(query, (data[0], data[1]))
+                    print('La orden ha sido almacenada correctamente en la base de datos')
+
+                    conn.commit()
+
+                except Exception as e:
+                    print(e)
+                    cursor.close()
+                    self.close_connection(conn)
+                    print("PostgreSQL connection has been closed but an Exception has been raised")
+                    return None
+                else:
+                    cursor.close()
+                    self.close_connection(conn)
+                    print("PostgreSQL connection is closed")
+                    return query
+
         #     if order[OpenOrderElement.OrderType.name] == OrderTypes.Compra.name:
         #         try:
         #             with conn:
@@ -142,7 +163,7 @@ class DatabaseController:
         #
         #     conn.close()
         # else:
-        #     print('No se puede establecer una comunicación con la base de datos')
+        #     print('No se puede establecer una comunicación con la base de datos'
 
     # def update_capital(self, time_stamp, value):
     #     try:
@@ -244,6 +265,7 @@ if __name__ == '__main__':
     config = BulidConfiguraion()
     dbController = DatabaseController(config)
 
+    # script para llenar la tabla day
     date_rng = list(pd.date_range(start='2016/01/01', end='2019/10/31', freq='D'))
     tmp = []
 
@@ -251,16 +273,23 @@ if __name__ == '__main__':
     for fila in date_rng:
         tmp.append(str(fila).split(' ')[0].split('-'))
 
-    contador = 0
+    print(tmp)
+
     for dat in tmp:
-        dat.insert(0, str(contador))
+        key = ''.join(dat)
+        dat.insert(0, int(key))
         print(dat, '*****')
         dbController.insert('day', dat)
-        contador += 1
 
     print('finish')
+    # Fin
 
-
+    # scrip para llenar la tabla time
+    # for i in range(0, 24):
+    #     time_tmp = [i, i]
+    #     dbController.insert('time', time_tmp)
+    #     print('finish')
+    # #     FIN
 
 
 

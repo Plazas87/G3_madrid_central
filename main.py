@@ -22,8 +22,8 @@ ConfigurationObject = BulidConfiguraion()
 mainController = Controller(ConfigurationObject)
 mainController.start()
 
-
-
+print(mainController.airQualityDataController.mainTable)
+# print(mainController.airQualityDataController.columnNames)
 
 # class SMWinservice(win32serviceutil.ServiceFramework):
 #     '''Base class to create winservice in Python'''
