@@ -19,12 +19,14 @@ class ClimateFileReader(fr.FileReader):
         logging.info('Start loading files')
         temp_table = []
         for file in files_to_read:
+            logging.info('Cargando tabla desde: ' + str(self.pathName) + str(file))
             print('Cargando tabla desde: ' + self.pathName, file)
             try:
                 if '.csv' in file:
                     temp_table.append(self.__read_csv_data(self.pathName, file))
 
                 elif '.txt' in file:
+                    print('txt file detectec')
                     temp_table.append(self.__read_txt_files(self.pathName, file))
 
             except Exception as e:
@@ -79,6 +81,7 @@ class ClimateFileReader(fr.FileReader):
 
         # Filtrar la tabla por las variables NOX y CO
         # datos = datos[(datos.MAGNITUD == 6) | (datos.MAGNITUD == 14)]
+        datos = datos.astype({'MAGNITUD': int})
         datos = datos[(datos.MAGNITUD == 6)]
 
         # Preparación de la tabla de datos
@@ -139,7 +142,10 @@ class ClimateFileReader(fr.FileReader):
                             temporal_row.append(_[0:splitters[spl]])
 
                         else:
-                            temporal_row.append(_[splitters[spl - 1]:splitters[spl]])
+                            if spl == 6:
+                                temporal_row.append('20' + _[splitters[spl - 1]:splitters[spl]])
+                            else:
+                                temporal_row.append(_[splitters[spl - 1]:splitters[spl]])
 
                             if spl == 3:
                                 concat_str = temporal_row[0] + temporal_row[1] + temporal_row[2]
@@ -163,8 +169,6 @@ class ClimateFileReader(fr.FileReader):
                     contador += 1
                     print(contador, str(temporal_row))
                     lst.append(temporal_row)
-                    datos = pd.DataFrame(lst, )
-                    self.__prepare_data(datos, file_name)
 
         except Exception as e:
             print('Error: {}'.format(e))
@@ -173,12 +177,9 @@ class ClimateFileReader(fr.FileReader):
             column_names = ['PROVINCIA', 'MUNICIPIO', 'ESTACION', 'MAGNITUD', 'PUNTO_MUESTREO', 'TECNICA_MUESTREO',
                             'ANO', 'MES', 'DIA',
                             'H01', 'V01', 'H02', 'V02', 'H03', 'V03', 'H04', 'V04', 'H05', 'V05', 'H06', 'V06', 'H07',
-                            'V07',
-                            'H08', 'V08', 'H09', 'V09', 'H10', 'V10', 'H11', 'V11', 'H12', 'V12', 'H13', 'V13', 'H14',
-                            'V14',
-                            'H15', 'V15', 'H16', 'V16', 'H17', 'V17', 'H18', 'V18', 'H19', 'V19', 'H20', 'V20', 'H21',
-                            'V21',
-                            'H22', 'V22', 'H23', 'V23', 'H24', 'V24']
+                            'V07', 'H08', 'V08', 'H09', 'V09', 'H10', 'V10', 'H11', 'V11', 'H12', 'V12', 'H13', 'V13',
+                            'H14', 'V14', 'H15', 'V15', 'H16', 'V16', 'H17', 'V17', 'H18', 'V18', 'H19', 'V19', 'H20',
+                            'V20', 'H21', 'V21', 'H22', 'V22', 'H23', 'V23', 'H24', 'V24']
 
             final_data = pd.DataFrame(lst, columns=column_names)
 
@@ -194,7 +195,6 @@ class ClimateFileReader(fr.FileReader):
     def __reorder_columns(self, table):
         table = table[['ESTACION', 'TIMESTAMP', 'HORA', 'MAGNITUD', 'VALOR', 'VALIDEZ']]
         return table
-
 
 
 if __name__ == '__main__':
