@@ -70,5 +70,19 @@ class MagnitudeTable(Enum):
     min_value_bad = 8
 
 
+class ColumnsTxt(Enum):
+    PROVINCIA = 0
+    MUNICIPIO = 1
+    ESTACION = 2
+    MAGNITUD = 3
+    TECNICA = 4
+    PERIODO = 5
+    ANO = 6
+    MES = 7
+    DIA = 8
+    
+
+
+
 class ChemicalComponents(Enum):
     """Pendiente hacer o definir el listdo de componentes que se van a estudiar"""

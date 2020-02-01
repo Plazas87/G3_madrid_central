@@ -21,7 +21,11 @@ class ClimateFileReader(fr.FileReader):
         for file in files_to_read:
             print('Cargando tabla desde: ' + self.pathName, file)
             try:
-                temp_table.append(self.__prepare_data(self.pathName, file))
+                if '.csv' in file:
+                    temp_table.append(self.__read_csv_data(self.pathName, file))
+
+                elif '.txt' in file:
+                    temp_table.append(self.__read_txt_files(self.pathName, file))
 
             except Exception as e:
                 print('* El archivo ' + self.pathName + file + ' no pudo ser cargado')
@@ -39,7 +43,7 @@ class ClimateFileReader(fr.FileReader):
             logging.error("Exception: can't concatenate tables - {0}".format(e))
             return False
 
-    def __prepare_data(self, path_name, file_name):
+    def __read_csv_data(self, path_name, file_name):
         strfile = path_name + file_name
         logging.info('Reshaping data: {}'.format(file_name))
         datos = pd.read_csv(strfile, sep=';')
@@ -54,6 +58,24 @@ class ClimateFileReader(fr.FileReader):
         # Se asignan las columnas nuevas al DataFrame general.
         datos['PUNTO_MUESTREO'] = tmp['PUNTO_MUESTREO']
         datos.insert(5, 'TECNICA_MUESTREO', tmp['TECNICA_MUESTREO'])
+
+        return self.__prepare_data(datos, file_name)
+
+    def __prepare_data(self, datos, file_name):
+        # strfile = path_name + file_name
+        # logging.info('Reshaping data: {}'.format(file_name))
+        # datos = pd.read_csv(strfile, sep=';')
+        # # Separar la información contenida en la columna MAGNITUD en sus tres
+        # # componentes.
+        # tmp = pd.DataFrame(datos['PUNTO_MUESTREO'])
+        # tmp['TECNICA_MUESTREO'] = 0
+        # for fila in range(0, len(tmp)):
+        #     tmp.iloc[fila, 1] = str.split(tmp.iloc[fila, 0], "_")[2]
+        #     tmp.iloc[fila, 0] = str.split(tmp.iloc[fila, 0], "_")[0]
+        #
+        # # Se asignan las columnas nuevas al DataFrame general.
+        # datos['PUNTO_MUESTREO'] = tmp['PUNTO_MUESTREO']
+        # datos.insert(5, 'TECNICA_MUESTREO', tmp['TECNICA_MUESTREO'])
 
         # Filtrar la tabla por las variables NOX y CO
         # datos = datos[(datos.MAGNITUD == 6) | (datos.MAGNITUD == 14)]
@@ -97,6 +119,73 @@ class ClimateFileReader(fr.FileReader):
 
         logging.info("{} Load success".format(file_name))
         return data_3
+
+    def __read_txt_files(self, path_name, file_name):
+        try:
+            str_file_path = path_name + file_name
+            with open(str_file_path, 'r') as datos:
+                contador = 0
+                splitters = [2, 5, 8, 10, 12, 14, 16, 18, 20]
+                lst = []
+                while True:
+                    temporal_row = []
+                    _ = datos.readline()
+                    if not _:
+                        print('Going out')
+                        break
+
+                    for spl in range(0, len(splitters)):
+                        if spl == 0:
+                            temporal_row.append(_[0:splitters[spl]])
+
+                        else:
+                            temporal_row.append(_[splitters[spl - 1]:splitters[spl]])
+
+                            if spl == 3:
+                                concat_str = temporal_row[0] + temporal_row[1] + temporal_row[2]
+                                temporal_row.append(concat_str)
+
+                            if spl == len(splitters) - 1:
+                                tmp_values = _[splitters[spl]:]
+
+                                for i in range(1, 25):
+                                    if i == 1:
+                                        v = tmp_values[0:(i * 6)]
+                                        temporal_row.append(v[0:5])
+                                        temporal_row.append(v[5:6])
+
+                                    else:
+                                        v = tmp_values[((i - 1) * 6):(i * 6)]
+                                        temporal_row.append(v[0:5])
+                                        temporal_row.append(v[5:6])
+
+                    temporal_row.pop(6)
+                    contador += 1
+                    print(contador, str(temporal_row))
+                    lst.append(temporal_row)
+                    datos = pd.DataFrame(lst, )
+                    self.__prepare_data(datos, file_name)
+
+        except Exception as e:
+            print('Error: {}'.format(e))
+
+        try:
+            column_names = ['PROVINCIA', 'MUNICIPIO', 'ESTACION', 'MAGNITUD', 'PUNTO_MUESTREO', 'TECNICA_MUESTREO',
+                            'ANO', 'MES', 'DIA',
+                            'H01', 'V01', 'H02', 'V02', 'H03', 'V03', 'H04', 'V04', 'H05', 'V05', 'H06', 'V06', 'H07',
+                            'V07',
+                            'H08', 'V08', 'H09', 'V09', 'H10', 'V10', 'H11', 'V11', 'H12', 'V12', 'H13', 'V13', 'H14',
+                            'V14',
+                            'H15', 'V15', 'H16', 'V16', 'H17', 'V17', 'H18', 'V18', 'H19', 'V19', 'H20', 'V20', 'H21',
+                            'V21',
+                            'H22', 'V22', 'H23', 'V23', 'H24', 'V24']
+
+            final_data = pd.DataFrame(lst, columns=column_names)
+
+        except Exception as e:
+            print('Error :'.format(e))
+
+        return self.__prepare_data(final_data, file_name)
 
     def __process_timestamp(self, fila):
         # return pd.datetime(fila.ANO, fila.MES, fila.DIA)
