@@ -61,6 +61,7 @@ class Controller:
         try:
             load_files = self.__check_files()
             # read files from the air quality path
+            self.airQualityDataController.search_for_files()
             files_to_read = self.__check_files_by_path(load_files,
                                                        self.airQualityDataController.files,
                                                        self.airQualityDataController.pathName)
@@ -77,6 +78,7 @@ class Controller:
                 logging.info('Nothing new to read in: {}'.format(self.airQualityDataController.pathName))
 
             # read files from the air quality station path
+            self.airQualityStation.search_for_files()
             files_to_read = self.__check_files_by_path(load_files,
                                                        self.airQualityStation.files,
                                                        self.airQualityStation.pathName)
@@ -88,31 +90,33 @@ class Controller:
             else:
                 logging.info('Nothing new to read in {} '.format(self.airQualityStation.pathName))
 
-                # read files from traffic flow path
-                files_to_read = self.__check_files_by_path(load_files,
-                                                           self.trafficDataController.files,
-                                                           self.trafficDataController.pathName)
-                if len(files_to_read) != 0:
-                    self.trafficDataController.load_files()
-                    self.dbController.insert('files', files_to_read,
-                                             'Insert files from {} into file table'.format(
-                                                 self.trafficDataController.pathName))
+            # read files from traffic flow path
+            self.trafficDataController.search_for_files()
+            files_to_read = self.__check_files_by_path(load_files,
+                                                       self.trafficDataController.files,
+                                                       self.trafficDataController.pathName)
+            if len(files_to_read) != 0:
+                self.trafficDataController.load_files()
+                self.dbController.insert('files', files_to_read,
+                                         'Insert files from {} into file table'.format(
+                                             self.trafficDataController.pathName))
 
-                else:
-                    logging.info('Nothing new to read in {} '.format(self.trafficDataController.pathName))
+            else:
+                logging.info('Nothing new to read in {} '.format(self.trafficDataController.pathName))
 
-                    # read files from traffic flow station path
-                    files_to_read = self.__check_files_by_path(load_files,
-                                                               self.trafficStation.files,
-                                                               self.trafficStation.pathName)
-                    if len(files_to_read) != 0:
-                        self.trafficStation.load_files()
-                        self.dbController.insert('files', files_to_read,
-                                                 'Insert files from {} into file table'.format(
-                                                     self.trafficStation.pathName))
+            # read files from traffic flow station path
+            self.trafficStation.search_for_files()
+            files_to_read = self.__check_files_by_path(load_files,
+                                                       self.trafficStation.files,
+                                                       self.trafficStation.pathName)
+            if len(files_to_read) != 0:
+                self.trafficStation.load_files()
+                self.dbController.insert('files', files_to_read,
+                                         'Insert files from {} into file table'.format(
+                                             self.trafficStation.pathName))
 
-                    else:
-                        logging.info('Nothing new to read in {} '.format(self.trafficStation.pathName))
+            else:
+                logging.info('Nothing new to read in {} '.format(self.trafficStation.pathName))
 
             # files_to_read = self.__check_files_by_path(load_files, self.trafficDataController.files)
             # self.trafficDataController.load_files(files_to_read)
