@@ -1,3 +1,6 @@
+#! usr/bin/env python3
+
+
 from climate_file_reader import ClimateFileReader
 from climate_station_reader import ClimateStation
 from traffic_file_reader import TrafficFileReader
@@ -11,6 +14,7 @@ class Controller:
     """Controlador que se encanga de armonizar la funcionalidades de todos los objetos de las clases presentes """
     def __init__(self, configuration):
         logging.info('Starting controller')
+        self.status = False
         self.dbController = DatabaseController(configuration)
         self.airQualityDataController = ClimateFileReader(rutaArchivo=configuration.air_quality_path,
                                                           extencion=['.txt', '.csv'])
@@ -25,10 +29,10 @@ class Controller:
                                              extencion=['.csv'])
 
     def __check_files(self):
+        """Esta función se encarga de consultar qué archivos han sido previamente cargados en la base de datos."""
         logging.info('Look for files that has been already loaded')
         query = self.dbController.selectQuery('files', 'file_name', info='Checking for files in files table')
-        print('Previously read files', query)
-        logging.info('Previously read files: ' + str(query))
+        logging.info('Previously read: ' + str(query))
 
         return query
 
@@ -39,13 +43,11 @@ class Controller:
             # Comprueba que archivos an sido leidos previamente, y por lo tanto no se deben volver a leer
             for i in obj_files:
                 if i in query:
-                    logging.info('File: ' + str(i) + ' Already loaded')
-                    print('No se carga')
+                    logging.info('File: ' + str(i) + ' has been already read')
                     pass
                 else:
-                    print(i, 'Se carga')
+                    logging.info('New file detected: ' + str(i))
                     files_read.append(i)
-                    print('Controller ******')
 
         except Exception as e:
             logging.error("Can't read files from database " + str(e))
@@ -55,6 +57,7 @@ class Controller:
     def read_data(self):
         """Esta función se encarga de leer los archivos que se encuentran en cada una de las ubicaciones del repositorio,
         si el archivo ya ha sido leido, no se carga nuevaente, de lo contrario el archivo se carga normalmente."""
+        logging.info('Looking for new files to read')
         try:
             load_files = self.__check_files()
             # read files from the air quality path
@@ -64,7 +67,6 @@ class Controller:
 
             if len(files_to_read) != 0:
                 if self.airQualityDataController.load_files(files_to_read):
-                    print(self.airQualityDataController.columnNames, '****** from controller')
                     self.dbController.insert('files',
                                              files_to_read,
                                              'Insert files from {} into files table'.format(self.airQualityDataController.pathName))
@@ -181,7 +183,11 @@ class Controller:
         #     print(e)
 
     def start(self):
+        self.status = True
         self.read_data()
+
+    def stop(self):
+        self.status = False
 
 
 

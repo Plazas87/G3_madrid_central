@@ -9,6 +9,7 @@ import logging
 class ClimateFileReader(fr.FileReader):
     """Esta clase contiene las funciones y la información necesaria para realizarlectura de los archivos .csv que
      esxitan dentro de la carpeta resources realcionados con el clima"""
+
     def __init__(self, rutaArchivo, extencion):
         logging.info('Creating Climate file reader object')
         fr.FileReader.__init__(self, rutaArchivo, extencion)
@@ -20,19 +21,19 @@ class ClimateFileReader(fr.FileReader):
         temp_table = []
         for file in files_to_read:
             logging.info('Cargando tabla desde: ' + str(self.pathName) + str(file))
-            print('Cargando tabla desde: ' + self.pathName, file)
             try:
                 if '.csv' in file:
+                    logging.info('New .csv file detected: ' + str(file))
                     temp_table.append(self.__read_csv_data(self.pathName, file))
 
                 elif '.txt' in file:
-                    print('txt file detectec')
+                    logging.info('New .txt file detected: ' + str(file))
                     temp_table.append(self.__read_txt_files(self.pathName, file))
 
             except Exception as e:
-                print('* El archivo ' + self.pathName + file + ' no pudo ser cargado')
-                print('    Error: ', e)
-                logging.error("Exception: El archivo '{0}' no pudo ser cargado".format(file))
+                logging.error("Exception: El archivo '{0}' no pudo ser cargado ('{1} - {2}')".format(file,
+                                                                                                     e,
+                                                                                                     e.__traceback__.tb_lineno))
                 continue
 
         try:
@@ -41,25 +42,30 @@ class ClimateFileReader(fr.FileReader):
             return True
 
         except Exception as e:
-            print('Exception : {}'.format(e))
-            logging.error("Exception: can't concatenate tables - {0}".format(e))
+            logging.error("Exception: can't concatenate tables - {0}- {1}".format(e, e.__traceback__.tb_lineno))
             return False
 
     def __read_csv_data(self, path_name, file_name):
         strfile = path_name + file_name
-        logging.info('Reshaping data: {}'.format(file_name))
-        datos = pd.read_csv(strfile, sep=';')
-        # Separar la información contenida en la columna MAGNITUD en sus tres
-        # componentes.
-        tmp = pd.DataFrame(datos['PUNTO_MUESTREO'])
-        tmp['TECNICA_MUESTREO'] = 0
-        for fila in range(0, len(tmp)):
-            tmp.iloc[fila, 1] = str.split(tmp.iloc[fila, 0], "_")[2]
-            tmp.iloc[fila, 0] = str.split(tmp.iloc[fila, 0], "_")[0]
 
-        # Se asignan las columnas nuevas al DataFrame general.
-        datos['PUNTO_MUESTREO'] = tmp['PUNTO_MUESTREO']
-        datos.insert(5, 'TECNICA_MUESTREO', tmp['TECNICA_MUESTREO'])
+        try:
+            logging.info('Reshaping data: {}'.format(file_name))
+            datos = pd.read_csv(strfile, sep=';')
+            # Separar la información contenida en la columna MAGNITUD en sus tres
+            # componentes.
+            tmp = pd.DataFrame(datos['PUNTO_MUESTREO'])
+            tmp['TECNICA_MUESTREO'] = 0
+            for fila in range(0, len(tmp)):
+                tmp.iloc[fila, 1] = str.split(tmp.iloc[fila, 0], "_")[2]
+                tmp.iloc[fila, 0] = str.split(tmp.iloc[fila, 0], "_")[0]
+
+            # Se asignan las columnas nuevas al DataFrame general.
+            datos['PUNTO_MUESTREO'] = tmp['PUNTO_MUESTREO']
+            datos.insert(5, 'TECNICA_MUESTREO', tmp['TECNICA_MUESTREO'])
+            logging.info('Done: ' + str(len(datos)) + ' processed')
+
+        except Exception as e:
+            logging.error("Error: {0} - {1}".format(e, e.__traceback__.tb_lineno))
 
         return self.__prepare_data(datos, file_name)
 
@@ -90,8 +96,8 @@ class ClimateFileReader(fr.FileReader):
         col_names_1 = list(col_names[9::2])
         col_names_2 = list(col_names[10::2])
 
-        data_1 = datos[col_comunes+col_names_1]
-        data_2 = datos[col_comunes+col_names_2]
+        data_1 = datos[col_comunes + col_names_1]
+        data_2 = datos[col_comunes + col_names_2]
 
         data_long_1 = data_1.melt(id_vars=col_comunes,
                                   var_name='HORA',
@@ -124,6 +130,9 @@ class ClimateFileReader(fr.FileReader):
         return data_3
 
     def __read_txt_files(self, path_name, file_name):
+        """Esta función se encarga de leer los archiivos de tipo .txt en el repositorio de calidad del aire y
+        prepararlos para la carga"""
+        logging.info('Reading and process data...')
         try:
             str_file_path = path_name + file_name
             with open(str_file_path, 'r') as datos:
@@ -134,7 +143,7 @@ class ClimateFileReader(fr.FileReader):
                     temporal_row = []
                     _ = datos.readline()
                     if not _:
-                        print('Going out')
+                        logging.info('Done: ' + str(contador) + ' processed')
                         break
 
                     for spl in range(0, len(splitters)):
@@ -167,11 +176,10 @@ class ClimateFileReader(fr.FileReader):
 
                     temporal_row.pop(6)
                     contador += 1
-                    print(contador, str(temporal_row))
                     lst.append(temporal_row)
 
         except Exception as e:
-            print('Error: {}'.format(e))
+            logging.error('Exception: {}'.format(e))
 
         try:
             column_names = ['PROVINCIA', 'MUNICIPIO', 'ESTACION', 'MAGNITUD', 'PUNTO_MUESTREO', 'TECNICA_MUESTREO',
@@ -184,7 +192,7 @@ class ClimateFileReader(fr.FileReader):
             final_data = pd.DataFrame(lst, columns=column_names)
 
         except Exception as e:
-            print('Error :'.format(e))
+            logging.error('Exception: {0} - {1}'.format(e, e.__traceback__.tb_lineno))
 
         return self.__prepare_data(final_data, file_name)
 

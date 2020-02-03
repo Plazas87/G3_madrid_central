@@ -1,12 +1,13 @@
 #! usr/bin/env python3
 
+
 import logging
 import file_reader as fr
 
 
 class TrafficStation(fr.FileReader):
     def __init__(self, rutaArchivo, extencion):
-        logging.info('Creating Climate station reader object')
+        logging.info('Creating traffic station reader object')
         fr.FileReader.__init__(self, rutaArchivo, extencion)
 
 

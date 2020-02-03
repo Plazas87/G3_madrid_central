@@ -1,3 +1,5 @@
+#! usr/bin/env python3
+
 import os
 import pandas as pd
 import logging
@@ -37,13 +39,13 @@ class FileReader:
         for r, d, f in os.walk(self.pathName):
             file_temp = f
 
-        print(file_temp, 'archivos en la carpeta')
+        logging.info('Files found: ' + str(file_temp))
         for file in file_temp:
             for ext in self.fileExtension:
                 if ext in file:
                     self.files.append(file)
 
-        logging.info("Total files : {0}".format(self.files))
+        logging.info("Total valid files : {0}".format(self.files))
         return len(self.files)
 
     def __str__(self):

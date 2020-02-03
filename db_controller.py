@@ -1,3 +1,5 @@
+#! usr/bin/env python3
+
 import sqlite3
 import psycopg2 as db
 import logging
@@ -29,7 +31,6 @@ class DatabaseController:
 
     def connect(self, process_information='put some here'):
         logging.info('Connecting with database: ' + str(process_information))
-        print('Connecting with database')
         try:
             # connect to the PostgreSQL server
             conn = None
@@ -249,12 +250,12 @@ class DatabaseController:
                 print(e)
                 cursor.close()
                 self.close_connection(conn)
-                print("PostgreSQL connection has been closed but an Exception has been raised")
+                logging.info('PostgreSQL connection has been closed but an Exception has been raised')
                 return None
             else:
                 cursor.close()
                 self.close_connection(conn)
-                print("PostgreSQL connection is closed")
+                logging.info('PostgreSQL connection is closed')
                 return query
 
         else:

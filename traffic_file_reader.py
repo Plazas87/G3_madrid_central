@@ -1,6 +1,7 @@
 #! usr/bin/env python3
 
 import pandas as pd
+import logging
 import file_reader as fr
 
 
@@ -8,6 +9,7 @@ class TrafficFileReader(fr.FileReader):
     """Esta clase contiene las funciones y la información necesaria para realizarlectura de los archivos .csv que
      esxitan dentro de la carpeta resources realcionados con el clima"""
     def __init__(self, rutaArchivo, extencion):
+        logging.info('Creating traffic data reader object')
         fr.FileReader.__init__(self, rutaArchivo, extencion)
 
     # def load_files(self):
