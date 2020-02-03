@@ -29,12 +29,6 @@ ConfigurationObject = BulidConfiguraion()
 mainController = Controller(ConfigurationObject)
 mainController.start()
 
-print(mainController.airQualityDataController.mainTable)
-# print(mainController.airQualityDataController.columnNames)
-
-
-
-
 
 
 
