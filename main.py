@@ -1,5 +1,7 @@
 import logging
 import sys
+from time_thread import Temporizador
+from time import sleep
 # import socket
 #
 # import win32serviceutil
@@ -29,14 +31,18 @@ ConfigurationObject = BulidConfiguraion()
 mainController = Controller(ConfigurationObject)
 mainController.start()
 
-print(mainController.airQualityDataController.mainTable)
-# print(mainController.airQualityDataController.columnNames)
+checker = Temporizador('13:25:10', 15, mainController.start)
+checker.start()
 
+centinel = 0
+while checker._estado:
+    if centinel != 40:
+        print('#################WAIT###########')
+        sleep(2)
+    else:
+        checker.stop()
 
-
-
-
-
+    centinel += 1
 
 
 
