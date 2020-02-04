@@ -6,21 +6,19 @@ from threading import Thread
 from time import sleep
 
 
-class Temporizador(Thread):
-    def __init__(self, hora, delay, funcion):
+class UpdateChecker(Thread):
+    def __init__(self, delay, funcion):
         # El constructor recibe como parámetros:
-        ## hora = en un string con formato hh:mm:ss y es la hora a la que queremos que se ejecute la función.
         ## delay = tiempo de espera entre comprobaciones en segundos.
         ## funcion = función a ejecutar.
 
-        super(Temporizador, self).__init__()
-        self._estado = True
-        self.hora = hora
+        Thread.__init__(self)
+        self._status = True
         self.delay = delay
         self.funcion = funcion
 
     def stop(self):
-        self._estado = False
+        self._status = False
 
     def run(self):
         # # Pasamos el string a dato tipo datetime
@@ -33,7 +31,7 @@ class Temporizador(Thread):
         # print('Proxima ejecución programada el {0} a las {1}'.format(hora.date(), hora.time()))
 
         # Iniciamos el ciclo:
-        while self._estado:
+        while self._status:
             # Comparamos la hora actual con la de ejecución y ejecutamos o no la función.
             self.funcion()
             print('Ejecución programada ejecutada el {0} a las {1}'.format(hora.date(), hora.time()))
@@ -46,21 +44,5 @@ class Temporizador(Thread):
         # Si usamos el método stop() salimos del ciclo y el hilo terminará.
         else:
             print('Ejecución automática finalizada')
-
-
-if __name__ == '__main__':
-
-    def camilo():
-        print('***********************HILO************************************')
-
-
-    tempo = Temporizador('13:25:10', 15, camilo)
-    tempo.start()
-
-    for i in range(0, 10):
-        print('Printed from main threat')
-        sleep(5)
-
-    tempo.stop()
 
 

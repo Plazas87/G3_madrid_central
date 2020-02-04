@@ -35,6 +35,7 @@ class FileReader:
     def search_for_files(self):
         """Esta función se encarga de extraer el nombre de todos los archivos existentes en un directorio dado"""
         logging.info("Looking for files in : {}".format(self.pathName))
+        self.files = []
         file_temp = []
         for r, d, f in os.walk(self.pathName):
             file_temp = f
