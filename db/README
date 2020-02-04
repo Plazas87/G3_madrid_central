@@ -1,0 +1,8 @@
+-- Para restaurar backup
+
+DROP DATABASE madridcentral;
+
+CREATE DATABASE madridcentral;
+
+pg_restore -h localhost -U postgres -d madridcentral -v [ruta archivo]/madridcentral.backup
+
