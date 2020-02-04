@@ -7,6 +7,7 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 from built_configuration import BulidConfiguraion
+from enums import StationTable
 from configparser import ConfigParser
 from enum import Enum
 
@@ -124,84 +125,33 @@ class DatabaseController:
                     print("PostgreSQL connection is closed")
                     return query
 
-        #     if order[OpenOrderElement.OrderType.name] == OrderTypes.Compra.name:
-        #         try:
-        #             with conn:
-        #                 cursor = conn.cursor()
-        #                 cursor.execute(
-        #                     "INSERT INTO buyOrders(timestamp, id, ticker, ordertype, buyprice, cantidad) VALUES (%s,%s,%s,%s,%s,%s)",
-        #                     (order[OpenOrderElement.TimeStamp.name], order[OpenOrderElement.Id.name], order[OpenOrderElement.Ticker.name],
-        #                      order[OpenOrderElement.OrderType.name], order[OpenOrderElement.BuyPrice.name],
-        #                      order[OpenOrderElement.OpenCantidad.name]))
-        #                 # print('    La orden ha sido almacenada correctamente en la base de datos')
-        #         except sqlite3.IntegrityError as e:
-        #             print(e, ' - No se puede agregar la orden a la BD')
-        #
-        #         try:
-        #             with conn:
-        #                 cursor = conn.cursor()
-        #                 cursor.execute(
-        #                     "INSERT INTO openorders(timestamp, id, ticker, ordertype, buyprice, cantidad) VALUES (%s,%s,%s,%s,%s,%s)",
-        #                     (order[OpenOrderElement.TimeStamp.name], order[OpenOrderElement.Id.name], order[OpenOrderElement.Ticker.name],
-        #                      order[OpenOrderElement.OrderType.name], order[OpenOrderElement.BuyPrice.name],
-        #                      order[OpenOrderElement.OpenCantidad.name]))
-        #                 # print('    La orden ha sido almacenada correctamente en la base de datos')
-        #         except sqlite3.IntegrityError as e:
-        #             print(e, ' - No se puede agregar la orden a la BD')
-        #
-        #     elif order[OpenOrderElement.OrderType.name] == OrderTypes.Venta.name:
-        #         try:
-        #             with conn:
-        #                 cursor = conn.cursor()
-        #                 cursor.execute(
-        #                     "INSERT INTO sellorders(timestamp, id, ticker, ordertype, sellprice, cantidad) VALUES (%s,%s,%s,%s,%s,%s)",
-        #                     (order[CloseOrderElement.TimeStamp.name], order[CloseOrderElement.Id.name], order[CloseOrderElement.Ticker.name],
-        #                      order[CloseOrderElement.OrderType.name], order[CloseOrderElement.SellPrice.name],
-        #                      order[CloseOrderElement.CloseCantidad.name]))
-        #                 # print('    La orden de venta ha sido almacenada correctamente en la base de datos ')
-        #         except sqlite3.IntegrityError as e:
-        #             print('No se puede agregar la orden a la BD')
-        #
-        #     conn.close()
-        # else:
-        #     print('No se puede establecer una comunicación con la base de datos'
+            if table == 'station':
+                try:
+                    query = "INSERT INTO {0} VALUES (%s, %s, %s, %s, %s, %s, %s, %s)".format('.'.join([self.schema, table]))
+                    cursor = conn.cursor()
+                    cursor.execute(query, (data[StationTable.station_id.value],
+                                           data[StationTable.name.value],
+                                           data[StationTable.type.value],
+                                           data[StationTable.address.value],
+                                           data[StationTable.latitude.value],
+                                           data[StationTable.longitude.value],
+                                           data[StationTable.altitude.value],
+                                           data[StationTable.start_date.value]))
+                    print('La orden ha sido almacenada correctamente en la base de datos')
 
-    # def update_capital(self, time_stamp, value):
-    #     try:
-    #         conn = self.connect()
-    #         with conn:
-    #             cursor = conn.cursor()
-    #             cursor.execute("INSERT INTO capital (timestamp, capital) VALUES (%s,%s)", (time_stamp, value))
-    #     except sqlite3.IntegrityError as e:
-    #         print(e, '- Error in model.py: {} method update_capital'.format(e.__traceback__.tb_lineno))
+                    conn.commit()
 
-    # def update_open_orders(self, id_, value=0, operation='update'):
-    #     """Esta función se encarga de actualizar los valores de la cantidad de acciones en el portadolio.
-    #     Esta función debe llamarse siempre que se ejecute una orden de venta"""
-    #     if operation == 'update':
-    #         try:
-    #             conn = self.connect()
-    #             strquery = 'UPDATE openOrders SET cantidad= %s WHERE id= %s'
-    #             values = (value, id_)
-    #             with conn:
-    #                 cursor = conn.cursor()
-    #                 cursor.execute(strquery, values)
-    #         except sqlite3.IntegrityError as e:
-    #             print(e)
-    #             print('No se puede modificar el capital en la base de datos')
-    #
-    #     elif operation == 'delete':
-    #         try:
-    #             conn = self.connect()
-    #             strquery = 'DELETE FROM openOrders WHERE id= %s'
-    #             values = (id_,)
-    #             with conn:
-    #                 cursor = conn.cursor()
-    #                 cursor.execute(strquery, values)
-    #                 # print('se ha elimiado la orden {} que estaba abierta'.format(id_))
-    #         except sqlite3.IntegrityError as e:
-    #             print(e)
-    #             print('No se puede modificar el capital en la base de datos')
+                except Exception as e:
+                    print(e)
+                    cursor.close()
+                    self.close_connection(conn)
+                    print("PostgreSQL connection has been closed but an Exception has been raised")
+                    return None
+                else:
+                    cursor.close()
+                    self.close_connection(conn)
+                    print("PostgreSQL connection is closed")
+                return query
 
     def selectQuery(self, table_name, *columns, filter_table=None, info=' '):
         """Este método se encarga de realizar las consultas a todas las tablas de la base de datos del proyecto. Es lo
@@ -267,22 +217,22 @@ if __name__ == '__main__':
     dbController = DatabaseController(config)
 
     # script para llenar la tabla day
-    date_rng = list(pd.date_range(start='2016/01/01', end='2019/10/31', freq='D'))
-    tmp = []
-
-
-    for fila in date_rng:
-        tmp.append(str(fila).split(' ')[0].split('-'))
-
-    print(tmp)
-
-    for dat in tmp:
-        key = ''.join(dat)
-        dat.insert(0, int(key))
-        print(dat, '*****')
-        dbController.insert('day', dat)
-
-    print('finish')
+    # date_rng = list(pd.date_range(start='2016/01/01', end='2019/10/31', freq='D'))
+    # tmp = []
+    #
+    #
+    # for fila in date_rng:
+    #     tmp.append(str(fila).split(' ')[0].split('-'))
+    #
+    # print(tmp)
+    #
+    # for dat in tmp:
+    #     key = ''.join(dat)
+    #     dat.insert(0, int(key))
+    #     print(dat, '*****')
+    #     dbController.insert('day', dat)
+    #
+    # print('finish')
     # Fin
 
     # scrip para llenar la tabla time
@@ -291,6 +241,26 @@ if __name__ == '__main__':
     #     dbController.insert('time', time_tmp)
     #     print('finish')
     # #     FIN
+
+    # script para llenar la tabla station
+    # datos = pd.read_csv(
+    #     'resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/informacion_estaciones_red_calidad_aire.csv',
+    #     sep=';',
+    #     header='infer',
+    #     encoding='iso-8859-1')
+    #
+    # datos = datos[['CODIGO', 'ESTACION', 'COD_TIPO', 'DIRECCION', 'LATITUD', 'LONGITUD', 'ALTITUD', 'Fecha alta']]
+    # print(datos)
+    # datos.columns = [StationTable.station_id.name, StationTable.name.name, StationTable.type.name,
+    #                  StationTable.address.name, StationTable.latitude.name, StationTable.longitude,
+    #                  StationTable.altitude.name, StationTable.start_date.name]
+    #
+    # for i in datos.values:
+    #     print(list(i))
+    #     dbController.insert('station', list(i), 'insert station data')
+    #     print('finish')
+
+    # FIN
 
 
 

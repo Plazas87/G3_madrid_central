@@ -70,23 +70,6 @@ class ClimateFileReader(fr.FileReader):
         return self.__prepare_data(datos, file_name)
 
     def __prepare_data(self, datos, file_name):
-        # strfile = path_name + file_name
-        # logging.info('Reshaping data: {}'.format(file_name))
-        # datos = pd.read_csv(strfile, sep=';')
-        # # Separar la información contenida en la columna MAGNITUD en sus tres
-        # # componentes.
-        # tmp = pd.DataFrame(datos['PUNTO_MUESTREO'])
-        # tmp['TECNICA_MUESTREO'] = 0
-        # for fila in range(0, len(tmp)):
-        #     tmp.iloc[fila, 1] = str.split(tmp.iloc[fila, 0], "_")[2]
-        #     tmp.iloc[fila, 0] = str.split(tmp.iloc[fila, 0], "_")[0]
-        #
-        # # Se asignan las columnas nuevas al DataFrame general.
-        # datos['PUNTO_MUESTREO'] = tmp['PUNTO_MUESTREO']
-        # datos.insert(5, 'TECNICA_MUESTREO', tmp['TECNICA_MUESTREO'])
-
-        # Filtrar la tabla por las variables NOX y CO
-        # datos = datos[(datos.MAGNITUD == 6) | (datos.MAGNITUD == 14)]
         datos = datos.astype({'MAGNITUD': int})
         datos = datos[(datos.MAGNITUD == 6)]
 
