@@ -8,6 +8,8 @@ from datetime import datetime
 import numpy as np
 from built_configuration import BulidConfiguraion
 from enums import StationTable
+from enums import TimeTable
+from enums import MeasurementTable
 from configparser import ConfigParser
 from enum import Enum
 
@@ -108,7 +110,7 @@ class DatabaseController:
                 try:
                     query = "INSERT INTO {0} VALUES (%s, %s)".format('.'.join([self.schema, table]))
                     cursor = conn.cursor()
-                    cursor.execute(query, (data[0], data[1]))
+                    cursor.execute(query, (data[TimeTable.time_id.value], data[TimeTable.hour.value]))
                     print('La orden ha sido almacenada correctamente en la base de datos')
 
                     conn.commit()
@@ -139,6 +141,32 @@ class DatabaseController:
                                            data[StationTable.start_date.value]))
                     print('La orden ha sido almacenada correctamente en la base de datos')
 
+                    conn.commit()
+
+                except Exception as e:
+                    print(e)
+                    cursor.close()
+                    self.close_connection(conn)
+                    print("PostgreSQL connection has been closed but an Exception has been raised")
+                    return None
+                else:
+                    cursor.close()
+                    self.close_connection(conn)
+                    print("PostgreSQL connection is closed")
+                return query
+
+            if table == 'measurement':
+                try:
+                    query = "INSERT INTO {0} VALUES (%s, %s, %s, %s, %s, %s)".format('.'.join([self.schema, table]))
+                    cursor = conn.cursor()
+                    cursor.execute(query, (data[MeasurementTable.station_id.value],
+                                           data[MeasurementTable.day_id.value],
+                                           data[MeasurementTable.time_id.value],
+                                           data[MeasurementTable.magnitude_id.value],
+                                           data[MeasurementTable.value.value],
+                                           data[MeasurementTable.validation.value]))
+
+                    print('La orden ha sido almacenada correctamente en la base de datos')
                     conn.commit()
 
                 except Exception as e:
@@ -220,9 +248,14 @@ if __name__ == '__main__':
     # date_rng = list(pd.date_range(start='2016/01/01', end='2019/10/31', freq='D'))
     # tmp = []
     #
-    #
     # for fila in date_rng:
     #     tmp.append(str(fila).split(' ')[0].split('-'))
+    #
+    # print(tmp)
+    #
+    # for i in range(0, len(tmp)):
+    #     for j in range(0, len(tmp[i])):
+    #         tmp[i][j] = str(int(tmp[i][j]))
     #
     # print(tmp)
     #

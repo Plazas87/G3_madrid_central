@@ -13,6 +13,7 @@ class FileReader:
         self.totalFiles = self.search_for_files()
         self.mainTable = ''
         self.columnNames = []
+        self.errorFiles = []
 
     def load_files(self, files_to_read=''):
         """Esta función se encarga de leer todos los archivos en el directorio que cumplen

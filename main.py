@@ -8,9 +8,9 @@ from controller import Controller
 
 # Configuración del log de la aplicación
 formatter = logging.basicConfig(level='DEBUG',
-                    filename='log.txt',
-                    filemode='a',
-                    format='%(asctime)s;%(levelname)s;%(name)s;%(module)s;%(funcName)s;%(message)s')
+                                filename='log.txt',
+                                filemode='a',
+                                format='%(asctime)s;%(levelname)s;%(name)s;%(module)s;%(funcName)s;%(message)s')
 
 rootLogger = logging.getLogger()
 consoleHandler = logging.StreamHandler(sys.stdout)
@@ -27,10 +27,11 @@ checker = UpdateChecker(15, mainController.read_data)
 checker.start()
 
 centinel = 0
+
 while checker._status:
     if centinel != 40:
         print('****Main process****** each second print this line')
-        sleep(1)
+        sleep(2)
     else:
         checker.stop()
 

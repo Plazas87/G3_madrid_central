@@ -184,7 +184,7 @@ class ClimateFileReader(fr.FileReader):
         return int(''.join([str(fila.ANO), str(fila.MES), str(fila.DIA)]))
 
     def __reorder_columns(self, table):
-        table = table[['ESTACION', 'TIMESTAMP', 'HORA', 'MAGNITUD', 'VALOR', 'VALIDEZ']]
+        table = table[['PUNTO_MUESTREO', 'TIMESTAMP', 'HORA', 'MAGNITUD', 'VALOR', 'VALIDEZ']]
         return table
 
 
