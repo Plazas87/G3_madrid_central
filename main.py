@@ -1,10 +1,7 @@
 import logging
 import sys
-from time_thread import UpdateChecker
-from time import sleep
-
+from interface import Interface
 from built_configuration import BulidConfiguraion
-from controller import Controller
 
 # Configuración del log de la aplicación
 formatter = logging.basicConfig(level='DEBUG',
@@ -19,20 +16,5 @@ rootLogger.addHandler(consoleHandler)
 
 # Inicio de la aplicación
 ConfigurationObject = BulidConfiguraion()
-mainController = Controller(ConfigurationObject)
-mainController.start()
-
-
-checker = UpdateChecker(15, mainController.read_data)
-checker.start()
-
-centinel = 0
-
-while checker._status:
-    if centinel != 40:
-        sleep(2)
-        print('Still active')
-    else:
-        checker.stop()
-
-    centinel += 1
+app = Interface(ConfigurationObject)
+app.start()

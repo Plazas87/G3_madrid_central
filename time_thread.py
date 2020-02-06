@@ -20,6 +20,9 @@ class UpdateChecker(Thread):
     def stop(self):
         self._status = False
 
+    def get_status(self):
+        return self._status
+
     def run(self):
         # # Pasamos el string a dato tipo datetime
         # hora_aux = datetime.strptime(self.hora, '%H:%M:%S')
@@ -32,17 +35,13 @@ class UpdateChecker(Thread):
 
         # Iniciamos el ciclo:
         while self._status:
-            # Comparamos la hora actual con la de ejecución y ejecutamos o no la función.
-            self.funcion()
-            print('Ejecución programada ejecutada el {0} a las {1}'.format(hora.date(), hora.time()))
+            # Esperamos x segundos para volver a ejecutar la comprobación.
             nx = hora + timedelta(seconds=self.delay)
             print('Próxima ejecución programada el {0} a las {1}'.format(hora.date(), nx))
-
-            # Esperamos x segundos para volver a ejecutar la comprobación.
             sleep(self.delay)
+            # Comparamos la hora actual con la de ejecución y ejecutamos o no la función.
+            self.funcion()
 
         # Si usamos el método stop() salimos del ciclo y el hilo terminará.
         else:
             print('Ejecución automática finalizada')
-
-

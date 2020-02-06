@@ -126,40 +126,8 @@ class Controller:
             else:
                 logging.info('Nothing new to read in {} '.format(self.trafficStation.pathName))
 
-            # files_to_read = self.__check_files_by_path(load_files, self.trafficDataController.files)
-            # self.trafficDataController.load_files(files_to_read)
-            #
-            # files_to_read = self.__check_files_by_path(load_files, self.trafficDataController.files)
-            # self.trafficDataController.load_files(files_to_read)
-            #
-            # files_to_read = self.__check_files_by_path(load_files, self.trafficStation.files)
-            # self.trafficStation.load_files(files_to_read)
-
-
-            # if fil in self.airQualityDataController.files:
-            #     _.append(fil)
-            #     self.airQualityDataController.load_files(_)
-            #     # _ =[]
-            #
-            # if fil in self.airQualityStation.files:
-            #     _.append(fil)
-            #     self.airQualityStation.load_files(_)
-            #     # _ = []
-            #
-            # if fil in self.trafficDataController.files:
-            #     _.append(fil)
-            #     self.trafficDataController.load_files(_)
-            #     # _ = []
-            #
-            # if fil in self.trafficStation.files:
-            #     _.append(fil)
-            #     self.trafficStation.load_files(_)
-            #     # _ = []
-            #
-            # _ = []
-
         except Exception as e:
-            print(e)
+            logging.error(f'Error: can not read the data {str(e)} - {e.__traceback__.tb_frame} - {e.__traceback__.tb_lineno}')
 
         # if len(load_files) != 0:
         #     self.dbController.insert('files', load_files)
