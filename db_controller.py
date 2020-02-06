@@ -33,7 +33,6 @@ class DatabaseController:
         return cls.instance
 
     def connect(self, process_information='put some here'):
-        logging.info('Connecting with database: ' + str(process_information))
         try:
             # connect to the PostgreSQL server
             conn = None
@@ -44,19 +43,16 @@ class DatabaseController:
                               database=self.database)
             return conn
         except Exception as e:
-            print('Postgres/Unable to connect -', e, ': ', e.__traceback__.tb_frame)
-            logging.error('Unable to connect')
+            logging.error('Unable to connect' + str(e))
             return None
 
     def close_connection(self, connection):
         """Termina la conexión con la base de datos. Esta función de ser llamada siempre despues de cualquier
         operación en la base de datos"""
-        logging.info('Closing the connection with database')
         try:
             connection.close()
         except Exception as e:
-            print('Unable to close the connection -', e, ': ', e.__traceback__.tb_frame)
-            logging.error('Unable to close the connection')
+            logging.error('Unable to close the connection: {}'.format(e))
             return None
 
     def insert(self, table, data, info=' '):
@@ -166,20 +162,16 @@ class DatabaseController:
                                            data[MeasurementTable.value.value],
                                            data[MeasurementTable.validation.value]))
 
-                    print('La orden ha sido almacenada correctamente en la base de datos')
-                    conn.commit()
-
                 except Exception as e:
-                    print(e)
+                    logging.error('Error: PostgreSQL connection has been closed but an Exception has been raised - {0}'.format(e))
                     cursor.close()
                     self.close_connection(conn)
-                    print("PostgreSQL connection has been closed but an Exception has been raised")
-                    return None
+                    return False
                 else:
+                    conn.commit()
                     cursor.close()
                     self.close_connection(conn)
-                    print("PostgreSQL connection is closed")
-                return query
+                return True
 
     def selectQuery(self, table_name, *columns, filter_table=None, info=' '):
         """Este método se encarga de realizar las consultas a todas las tablas de la base de datos del proyecto. Es lo

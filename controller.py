@@ -69,15 +69,18 @@ class Controller:
             if len(files_to_read) != 0:
                 if self.airQualityDataController.load_files(files_to_read):
                     if len(self.airQualityDataController.mainTable) != 0:
+                        logging.info('Connecting with database: Main table to database')
                         for line_row in self.airQualityDataController.mainTable.values:
-                            self.dbController.insert('measurement', list(line_row), 'Main table to database')
-                        else:
-                            self.dbController.insert('files',
-                                                     files_to_read,
-                                                     'Insert files from {} into files table'.format(self.airQualityDataController.pathName))
+                            if not (self.dbController.insert('measurement', list(line_row))):
+                                logging.error(f'This measurement has errors: {str(line_row)}')
+                                self.airQualityDataController.errorFiles.append(list(line_row))
+
+                        self.dbController.insert('files',
+                                                 files_to_read,
+                                                 f'Insert files from {self.airQualityDataController.pathName} into files table')
 
                 else:
-                    logging.error('No se pudo cargar la tabla')
+                    logging.error('The table can not be loaded')
 
             else:
                 logging.info('Nothing new to read in: {}'.format(self.airQualityDataController.pathName))

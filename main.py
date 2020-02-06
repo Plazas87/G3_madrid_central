@@ -30,8 +30,8 @@ centinel = 0
 
 while checker._status:
     if centinel != 40:
-        print('****Main process****** each second print this line')
         sleep(2)
+        print('Still active')
     else:
         checker.stop()
 

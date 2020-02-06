@@ -47,7 +47,6 @@ class ClimateFileReader(fr.FileReader):
 
     def __read_csv_data(self, path_name, file_name):
         strfile = path_name + file_name
-
         try:
             logging.info('Reshaping data: {}'.format(file_name))
             datos = pd.read_csv(strfile, sep=';')
@@ -120,7 +119,7 @@ class ClimateFileReader(fr.FileReader):
             str_file_path = path_name + file_name
             with open(str_file_path, 'r') as datos:
                 contador = 0
-                splitters = [2, 5, 8, 10, 12, 14, 16, 18, 20]
+                splitters = [2, 5, 8, 10, 12, 14, 16, 18, 20, 22]
                 lst = []
                 while True:
                     temporal_row = []
@@ -134,17 +133,15 @@ class ClimateFileReader(fr.FileReader):
                             temporal_row.append(_[0:splitters[spl]])
 
                         else:
-                            if spl == 6:
-                                temporal_row.append('20' + _[splitters[spl - 1]:splitters[spl]])
-                            else:
-                                temporal_row.append(_[splitters[spl - 1]:splitters[spl]])
-
                             if spl == 3:
+                                # print('spl = ', str(spl))
                                 concat_str = temporal_row[0] + temporal_row[1] + temporal_row[2]
+                                temporal_row.append(_[splitters[spl - 1]:splitters[spl]])
                                 temporal_row.append(concat_str)
 
-                            if spl == len(splitters) - 1:
-                                tmp_values = _[splitters[spl]:]
+                            elif spl == len(splitters) - 1:
+                                # print('spl = ', str(spl))
+                                tmp_values = _[splitters[spl - 1]:]
 
                                 for i in range(1, 25):
                                     if i == 1:
@@ -156,6 +153,14 @@ class ClimateFileReader(fr.FileReader):
                                         v = tmp_values[((i - 1) * 6):(i * 6)]
                                         temporal_row.append(v[0:5])
                                         temporal_row.append(v[5:6])
+
+                            elif spl == 6:
+                                # print('spl = ', str(spl), _[splitters[spl - 1]:splitters[spl]])
+                                temporal_row.append('20' + _[splitters[spl - 1]:splitters[spl]])
+
+                            else:
+                                # print('spl = ', str(spl), _[splitters[spl - 1]:splitters[spl]], '*')
+                                temporal_row.append(_[splitters[spl - 1]:splitters[spl]])
 
                     temporal_row.pop(6)
                     contador += 1
@@ -173,9 +178,10 @@ class ClimateFileReader(fr.FileReader):
                             'V20', 'H21', 'V21', 'H22', 'V22', 'H23', 'V23', 'H24', 'V24']
 
             final_data = pd.DataFrame(lst, columns=column_names)
+            final_data = final_data.astype({'MES': int, 'DIA': int})
 
         except Exception as e:
-            logging.error('Exception: {0} - {1}'.format(e, e.__traceback__.tb_lineno))
+            logging.error('Exception: {0} - {1} - {2}'.format(e, e.__traceback__.tb_frame, e.__traceback__.tb_lineno))
 
         return self.__prepare_data(final_data, file_name)
 
