@@ -266,8 +266,9 @@ if __name__ == '__main__':
     #     dbController.insert('time', time_tmp)
     #     print('finish')
     # #     FIN
-
+    #
     # script para llenar la tabla station
+    #
     # datos = pd.read_csv(
     #     'resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/informacion_estaciones_red_calidad_aire.csv',
     #     sep=';',
@@ -284,7 +285,7 @@ if __name__ == '__main__':
     #     print(list(i))
     #     dbController.insert('station', list(i), 'insert station data')
     #     print('finish')
-
+    #
     # FIN
 
 

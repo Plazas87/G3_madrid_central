@@ -10,12 +10,12 @@ class FileReader:
         self.pathName = rutaArchivo
         self.fileExtension = extencion
         self.files = []
-        self.totalFiles = self.search_for_files()
+        self.totalFiles = 0
         self.mainTable = ''
         self.columnNames = []
         self.errorFiles = []
 
-    def load_files(self, files_to_read=''):
+    def load_files(self, q, files_to_read=''):
         """Esta función se encarga de leer todos los archivos en el directorio que cumplen
         con el criterio de la extención"""
         logging.info('Start loading files')
@@ -48,7 +48,7 @@ class FileReader:
                     self.files.append(file)
 
         logging.info("Total valid files : {0}".format(self.files))
-        return len(self.files)
+        self.totalFiles = len(self.files)
 
     def __str__(self):
         return '- Ruta de archivo: ' + self.pathName + '\n' + '- Extención de archivos: ' + self.fileExtension + '\n' + \
