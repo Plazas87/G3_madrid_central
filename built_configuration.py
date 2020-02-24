@@ -5,7 +5,7 @@ import logging
 import enums as en
 
 
-class BulidConfiguraion:
+class BuildConfiguration:
     """Esta clase se encarga de leer el archivo de configuración genral, las parametros leidos son almacenados como
     propiedades del objeto que sera luego instanciado en la clase controller"""
     def __init__(self):
@@ -54,7 +54,7 @@ class BulidConfiguraion:
 
 
 if __name__ == '__main__':
-    c = BulidConfiguraion()
+    c = BuildConfiguration()
     print(c)
 
 

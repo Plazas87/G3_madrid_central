@@ -6,7 +6,7 @@ import logging
 import pandas as pd
 from datetime import datetime
 import numpy as np
-from built_configuration import BulidConfiguraion
+from built_configuration import BuildConfiguration
 from enums import StationTable
 from enums import TimeTable
 from enums import MeasurementTable
@@ -25,7 +25,7 @@ class DatabaseController:
         self.address = configuration.address
         self.port = configuration.port
         self.database = configuration.database
-        self.schema = configuration.schema
+        self.schema = ''
 
     def __new__(cls, name=None, params=None):
         if not hasattr(cls, 'instance'):  # Si no existe el atributo “instance”
@@ -61,7 +61,7 @@ class DatabaseController:
         if conn is not None:
             if table == 'files':
                 try:
-                    query = "INSERT INTO {0} (file_name) VALUES (%s)".format('.'.join([self.schema, table]))
+                    query = "INSERT INTO {0} (file_name) VALUES (%s)".format(table)
                     cursor = conn.cursor()
                     for value in data:
                         cursor.execute(query, (value,))
@@ -83,7 +83,7 @@ class DatabaseController:
 
             if table == 'day':
                 try:
-                    query = "INSERT INTO {0} VALUES (%s, %s, %s, %s)".format('.'.join([self.schema, table]))
+                    query = "INSERT INTO {0} VALUES (%s, %s, %s, %s)".format(table)
                     cursor = conn.cursor()
                     cursor.execute(query, (data[0], data[3], data[2], data[1]))
                     print('La orden ha sido almacenada correctamente en la base de datos')
@@ -104,7 +104,7 @@ class DatabaseController:
 
             if table == 'time':
                 try:
-                    query = "INSERT INTO {0} VALUES (%s, %s)".format('.'.join([self.schema, table]))
+                    query = "INSERT INTO {0} VALUES (%s, %s)".format(table)
                     cursor = conn.cursor()
                     cursor.execute(query, (data[TimeTable.time_id.value], data[TimeTable.hour.value]))
                     print('La orden ha sido almacenada correctamente en la base de datos')
@@ -125,42 +125,24 @@ class DatabaseController:
 
             if table == 'station':
                 try:
-                    query = "INSERT INTO {0} VALUES (%s, %s, %s, %s, %s, %s, %s, %s)".format('.'.join([self.schema, table]))
+                    query = "INSERT INTO {0} VALUES (%s, %s, %s, %s, %s, %s, %s, %s)".format(table)
                     cursor = conn.cursor()
-                    cursor.execute(query, (data[StationTable.station_id.value],
-                                           data[StationTable.name.value],
-                                           data[StationTable.type.value],
-                                           data[StationTable.address.value],
-                                           data[StationTable.latitude.value],
-                                           data[StationTable.longitude.value],
-                                           data[StationTable.altitude.value],
-                                           data[StationTable.start_date.value]))
-                    print('La orden ha sido almacenada correctamente en la base de datos')
-
-                    conn.commit()
-
-                except Exception as e:
-                    print(e)
-                    cursor.close()
-                    self.close_connection(conn)
-                    print("PostgreSQL connection has been closed but an Exception has been raised")
-                    return None
-                else:
-                    cursor.close()
-                    self.close_connection(conn)
-                    print("PostgreSQL connection is closed")
-                return query
-
-            if table == 'measurement':
-                try:
-                    query = "INSERT INTO {0} VALUES (%s, %s, %s, %s, %s, %s)".format('.'.join([self.schema, table]))
-                    cursor = conn.cursor()
-                    cursor.execute(query, (data[MeasurementTable.station_id.value],
-                                           data[MeasurementTable.day_id.value],
-                                           data[MeasurementTable.time_id.value],
-                                           data[MeasurementTable.magnitude_id.value],
-                                           data[MeasurementTable.value.value],
-                                           data[MeasurementTable.validation.value]))
+                    error_row = []
+                    for row in data.values:
+                        try:
+                            tmp_row = list(row)
+                            cursor.execute(query, (tmp_row[StationTable.station_id.value],
+                                                   tmp_row[StationTable.name.value],
+                                                   tmp_row[StationTable.type.value],
+                                                   tmp_row[StationTable.address.value],
+                                                   tmp_row[StationTable.latitude.value],
+                                                   tmp_row[StationTable.longitude.value],
+                                                   tmp_row[StationTable.altitude.value],
+                                                   tmp_row[StationTable.start_date.value]))
+                        except Exception as e:
+                            logging.error("Can't insert row: {}".format(e))
+                            error_row.append(row)
+                            continue
 
                 except Exception as e:
                     logging.error('Error: PostgreSQL connection has been closed but an Exception has been raised - {0}'.format(e))
@@ -173,6 +155,37 @@ class DatabaseController:
                     self.close_connection(conn)
                 return True
 
+            if table == 'measurement':
+                try:
+                    query = "INSERT INTO {0} VALUES (%s, %s, %s, %s, %s, %s)".format(table)
+                    cursor = conn.cursor()
+                    logging.info(f'Lenght data to databaase : {len(data)}')
+                    error_row = []
+                    for row in data.values:
+                        try:
+                            tmp_row = list(row)
+                            cursor.execute(query, (tmp_row[MeasurementTable.station_id.value],
+                                                   tmp_row[MeasurementTable.day_id.value],
+                                                   tmp_row[MeasurementTable.time_id.value],
+                                                   tmp_row[MeasurementTable.magnitude_id.value],
+                                                   tmp_row[MeasurementTable.value.value],
+                                                   tmp_row[MeasurementTable.validation.value]))
+                        except Exception as e:
+                            logging.error('Cant insert row: {}'.format(tmp_row))
+                            error_row.append(row)
+                            continue
+
+                except Exception as e:
+                    logging.error('Error: PostgreSQL connection has been closed but an Exception has been raised - {0}'.format(e))
+                    cursor.close()
+                    self.close_connection(conn)
+                    return False
+                else:
+                    conn.commit()
+                    cursor.close()
+                    self.close_connection(conn)
+                return True, error_row
+
     def selectQuery(self, table_name, *columns, filter_table=None, info=' '):
         """Este método se encarga de realizar las consultas a todas las tablas de la base de datos del proyecto. Es lo
         suficientemente versatil como para entender varios tipos de consultas a las diferentes tablas"""
@@ -182,7 +195,7 @@ class DatabaseController:
         str_query = ''
         if table_name == 'files':
             if columns[0] == 'file_name' and filter_table is None:
-                str_query = "SELECT {0} FROM {1}".format(columns[0], '.'.join([self.schema, table_name]))
+                str_query = "SELECT {0} FROM {1}".format(columns[0], table_name)
 
         # if table_name == 'buyorders' or table_name == 'sellorders' or table_name == 'openorders':
         #     if columns[0] == '*' and filter_table is None:
@@ -233,7 +246,7 @@ class DatabaseController:
 
 
 if __name__ == '__main__':
-    config = BulidConfiguraion()
+    config = BuildConfiguration()
     dbController = DatabaseController(config)
 
     # script para llenar la tabla day
@@ -268,7 +281,6 @@ if __name__ == '__main__':
     # #     FIN
     #
     # script para llenar la tabla station
-    #
     # datos = pd.read_csv(
     #     'resources/calidad_aire_madrid/informacion_estaciones_red_calidad_aire/informacion_estaciones_red_calidad_aire.csv',
     #     sep=';',
@@ -285,7 +297,7 @@ if __name__ == '__main__':
     #     print(list(i))
     #     dbController.insert('station', list(i), 'insert station data')
     #     print('finish')
-    #
+
     # FIN
 
 

@@ -15,7 +15,7 @@ class FileReader:
         self.columnNames = []
         self.errorFiles = []
 
-    def load_files(self, q, files_to_read=''):
+    def load_files(self, cola='', files_to_read=''):
         """Esta función se encarga de leer todos los archivos en el directorio que cumplen
         con el criterio de la extención"""
         logging.info('Start loading files')

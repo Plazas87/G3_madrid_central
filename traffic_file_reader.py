@@ -12,17 +12,17 @@ class TrafficFileReader(fr.FileReader):
         logging.info('Creating traffic data reader object')
         fr.FileReader.__init__(self, rutaArchivo, extencion)
 
-    # def load_files(self):
-    #     """Esta función se encarga de leer todos los archivos en el directorio que cumplen
-    #     con el criterio de la extención"""
-    #     stream = open(self.pathName + self.files[0])
-    #     data = []
-    #     while True:
-    #         data.append(stream.readline())
-    #         if not data:
-    #             break
-    #     stream.close()
-    #     print(data)
+    def load_files(self):
+        """Esta función se encarga de leer todos los archivos en el directorio que cumplen
+        con el criterio de la extención"""
+        stream = open(self.pathName + self.files[0])
+        # data = []
+        # while True:
+        #     data.append(stream.readline())
+        #     if not data:
+        #         break
+        # stream.close()
+        # print(data)
 
 
 if __name__ == '__main__':

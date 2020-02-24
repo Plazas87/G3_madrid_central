@@ -67,7 +67,7 @@ class Controller:
                                                        self.airQualityDataController.pathName)
 
             if len(files_to_read) != 0:
-                if self.airQualityDataController.load_files(files_to_read):
+                if self.airQualityDataController.load_files(files_to_read=files_to_read):
                     if len(self.airQualityDataController.mainTable) != 0:
                         logging.info('Connecting with database: Main table to database')
                         for line_row in self.airQualityDataController.mainTable.values:
