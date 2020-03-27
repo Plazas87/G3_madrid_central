@@ -10,6 +10,9 @@ from built_configuration import BuildConfiguration
 from enums import StationTable
 from enums import TimeTable
 from enums import MeasurementTable
+from enums import TrafficcMeasurement
+from enums import TrafficStation
+from enums import Traffic2Table
 from configparser import ConfigParser
 from enum import Enum
 
@@ -186,6 +189,102 @@ class DatabaseController:
                     self.close_connection(conn)
                 return True, error_row
 
+            if table == 'traffic':
+                try:
+                    query = "INSERT INTO {0} VALUES (%s, %s, %s, %s, %s, %s)".format(table)
+                    cursor = conn.cursor()
+                    logging.info(f'Lenght data to databaase : {len(data)}')
+                    error_row = []
+                    for row in data.values:
+                        try:
+                            tmp_row = list(row)
+                            cursor.execute(query, (tmp_row[TrafficcMeasurement.station_id.value],
+                                                   tmp_row[TrafficcMeasurement.day_id.value],
+                                                   tmp_row[TrafficcMeasurement.time_id.value],
+                                                   tmp_row[TrafficcMeasurement.intensity.value],
+                                                   tmp_row[TrafficcMeasurement.avg_speed.value],
+                                                   tmp_row[TrafficcMeasurement.validation.value]))
+                        except Exception as e:
+                            logging.error('Cant insert row: {0} - {1}'.format(tmp_row, str(e)))
+                            error_row.append(row)
+                            continue
+
+                except Exception as e:
+                    logging.error('Error: PostgreSQL connection has been closed but an Exception has been raised - {0}'.format(e))
+                    cursor.close()
+                    self.close_connection(conn)
+                    return False
+                else:
+                    conn.commit()
+                    cursor.close()
+                    self.close_connection(conn)
+                return True, error_row
+
+            if table == 'traffic2':
+                try:
+                    # query = "INSERT INTO {0} VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table)
+                    cursor = conn.cursor()
+                    logging.info(f'Python al mando : {data}')
+                    queries = []
+
+                    query_step_one = "COPY traffic2 FROM 'D:/Camilo/Documentos/Masters/EAE/Master en Big Data & Analytics/Trabajo final de Master/backup resources/main_directori_tfm/resources/trafico/trafico_historico_desde_2013/01-2016.csv'\
+                    DELIMITER ',' CSV HEADER"
+                    queries.append(query_step_one)
+
+                    query_step_two = "CREATE VIEW vista AS\
+                                       select station_id, EXTRACT(YEAR from fecha) as ano, EXTRACT(MONTH from fecha) as mes, EXTRACT(DAY from fecha) as dia, EXTRACT(HOUR from fecha) as time_id, 'intensity' as magnitude, sum(intensidad) as value, error_ as validation from traffic2\
+                                       group by station_id, ano, mes, dia, time_id, validation"
+                    queries.append(query_step_two)
+
+                    query_step_three = "create view vista2 as\
+                                        select station_id, to_number(CONCAT(to_char(ano, '9999'), '0', to_char(mes, '99'), '0', to_char(dia, '99')), '9999999999') as day_id, time_id, 'intensity' as magnitude, value, validation from vista"
+                    queries.append(query_step_three)
+
+                    for query in queries:
+                        cursor.execute(query)
+
+                except Exception as e:
+                    logging.error('Error: PostgreSQL connection has been closed but an Exception has been raised - {0}'.format(e))
+                    cursor.close()
+                    self.close_connection(conn)
+                    return False
+                else:
+                    conn.commit()
+                    cursor.close()
+                    self.close_connection(conn)
+
+            if table == 'trafficstation':
+                try:
+                    query = "INSERT INTO {0} VALUES (%s, %s, %s, %s, %s, %s)".format(table)
+                    cursor = conn.cursor()
+                    logging.info(f'Lenght data to databaase : {len(data)}')
+                    error_row = []
+                    for row in data.values:
+                        try:
+                            tmp_row = list(row)
+                            cursor.execute(query, (tmp_row[TrafficStation.station_id.value],
+                                                   tmp_row[TrafficStation.distric.value],
+                                                   tmp_row[TrafficStation.address.value],
+                                                   tmp_row[TrafficStation.type_station.value],
+                                                   tmp_row[TrafficStation.latitude.value],
+                                                   tmp_row[TrafficStation.longitude.value]))
+                        except Exception as e:
+                            logging.error('Cant insert row: {0} - {1}'.format(tmp_row, str(e)))
+                            error_row.append(row)
+                            continue
+
+                except Exception as e:
+                    logging.error('Error: PostgreSQL connection has been closed but an Exception has been raised - {0}'.format(e))
+                    cursor.close()
+                    self.close_connection(conn)
+                    return False
+
+                else:
+                    conn.commit()
+                    cursor.close()
+                    self.close_connection(conn)
+                    return True
+
     def selectQuery(self, table_name, *columns, filter_table=None, info=' '):
         """Este método se encarga de realizar las consultas a todas las tablas de la base de datos del proyecto. Es lo
         suficientemente versatil como para entender varios tipos de consultas a las diferentes tablas"""
@@ -196,29 +295,6 @@ class DatabaseController:
         if table_name == 'files':
             if columns[0] == 'file_name' and filter_table is None:
                 str_query = "SELECT {0} FROM {1}".format(columns[0], table_name)
-
-        # if table_name == 'buyorders' or table_name == 'sellorders' or table_name == 'openorders':
-        #     if columns[0] == '*' and filter_table is None:
-        #         str_query = 'SELECT * FROM {0}'.format(table_name)
-        #
-        #     elif columns[0] != '*' and filter_table is None:
-        #         selected_columns = ', '.join(columns)
-        #         str_query = 'SELECT ' + selected_columns + ' FROM {0}'.format(table_name)
-        #
-        #     elif columns[0] == '*' and filter_table is not None:
-        #         str_query = "SELECT * FROM {0} WHERE id='{1}'".format(table_name, filter_table)
-        #
-        #     elif columns[0] != '*' and filter_table is not None:
-        #         selected_columns = ', '.join(columns)
-        #         str_query = "SELECT " + selected_columns + " FROM {0} WHERE id='{1}'".format(table_name, filter_table)
-        #
-        # elif table_name == 'capital':
-        #     if (columns[0] == '*' or columns[0] == 'capital') and filter_table is None and table_name == 'capital':
-        #         str_query = 'SELECT {0} FROM {1} ORDER BY id_capital DESC'.format(columns[0], table_name)
-        #
-        # elif table_name == 'users':
-        #     if columns[0] == '*' and filter_table is not None:
-        #         str_query = "SELECT {0} FROM {1} WHERE usuario='{2}'".format(columns[0], table_name, filter_table)
 
         if str_query != '':
             try:
@@ -265,9 +341,9 @@ if __name__ == '__main__':
     # print(tmp)
     #
     # for dat in tmp:
-    #     key = ''.join(dat)
+    #     key = '0'.join(dat)
     #     dat.insert(0, int(key))
-    #     print(dat, '*****')
+    #     # print(dat, '*****')
     #     dbController.insert('day', dat)
     #
     # print('finish')

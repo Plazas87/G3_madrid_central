@@ -13,9 +13,9 @@ CREATE TABLE IF NOT EXISTS day(
 );
 CREATE TABLE IF NOT EXISTS station(
 	station_id serial PRIMARY KEY,
-	name VARCHAR(40),
+	name VARCHAR(70),
 	type VARCHAR(40),
-	address VARCHAR(40),
+	address VARCHAR(70),
 	latitude FLOAT NOT NULL,
 	longitude FLOAT NOT NULL,
 	altitude FLOAT NOT NULL,
@@ -45,4 +45,15 @@ CREATE TABLE IF NOT EXISTS measurement(
 	foreign key(time_id) REFERENCES time(time_id), 
 	foreign key(magnitude_id) REFERENCES magnitude(magnitude_id),
 	primary key(station_id, day_id, time_id, magnitude_id)
+);
+CREATE TABLE IF NOT EXISTS traffic(
+	station_id INT NOT NULL,
+	day_id INT NOT NULL,
+	time_id INT NOT NULL,
+	magnitude_id varchar(15),
+	value FLOAT NOT NULL,
+	validation varchar(1),
+	foreign key(day_id) REFERENCES day(day_id),
+	foreign key(time_id) REFERENCES time(time_id), 
+	primary key(day_id, time_id)
 );

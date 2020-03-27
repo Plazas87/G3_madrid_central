@@ -70,6 +70,39 @@ class MagnitudeTable(Enum):
     min_value_bad = 8
 
 
+class TrafficcMeasurement(Enum):
+    station_id = 0
+    day_id = 1
+    time_id = 2
+    intensity = 3
+    avg_speed = 4
+    validation = 5
+
+
+class TrafficStation(Enum):
+    station_id = 0
+    distric = 1
+    address = 2
+    type_station = 3
+    latitude = 4
+    longitude = 5
+
+
+
+
+class Traffic2Table(Enum):
+    idelem = 0
+    fecha = 1
+    identif = 2
+    tipo_elem = 3
+    intensidad = 4
+    ocupacion = 5
+    carga = 6
+    vmed = 7
+    error = 8
+    periodo_integracion = 9
+
+
 class ColumnsTxt(Enum):
     PROVINCIA = 0
     MUNICIPIO = 1

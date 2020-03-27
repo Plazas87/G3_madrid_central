@@ -11,7 +11,7 @@ class FileReader:
         self.fileExtension = extencion
         self.files = []
         self.totalFiles = 0
-        self.mainTable = ''
+        self.mainTable = []
         self.columnNames = []
         self.errorFiles = []
 
@@ -52,4 +52,12 @@ class FileReader:
 
     def __str__(self):
         return '- Ruta de archivo: ' + self.pathName + '\n' + '- Extención de archivos: ' + self.fileExtension + '\n' + \
-               '- Archivos: ' + str(self.files)
+               '- Archivos: ' + str(self.files) + '\n' + '-Andres: ' + str(self.totalFiles)
+
+
+if __name__ == '__main__':
+    lectura = FileReader('resources/trafico/ubicacion_puntos_medicion_trafico/', ['.csv'])
+
+
+
+
